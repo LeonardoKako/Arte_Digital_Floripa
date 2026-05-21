@@ -1,23 +1,21 @@
 #obras_container {
     width: 100%;
-    height: 704px;
+    min-height: 704px;
     padding: 5px 40px;
-    border: 1px solid black;
 }
 
 #container_interno {
     width: 1000px;
-    height: 692px;
+    min-height: 692px;
     margin: 0px auto;
-    border: 1px solid black;
+}
+
+#botao_tipo {
+    padding: 10px 45px ;
 }
 
 #botao_tipo button{
     width: 130px;
     height: 40px;
     border-radius: 40px;
-}
-
-.card {
-    width: 18rem;
 }

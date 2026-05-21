@@ -1,7 +1,32 @@
 import React from "react";
 import "./css/Obras_container.css";
+import Card from "./Card";
 
 function ObrasContainer() {
+  var obras = [
+    {
+      id: 1,
+      foto: "./img/obra1.png",
+      titulo: "This outstanding object",
+      descricao:
+        "Call out a feature, benefit, or value of your site or product that can stand on its own.",
+    },
+    {
+      id: 2,
+      foto: "./img/obra2.png",
+      titulo: "This outstanding article",
+      descricao:
+        "Cards are a great way to organize content in a collection—products, case studies, services, and more.",
+    },
+    {
+      id: 3,
+      foto: "./img/obra3.png",
+      titulo: "This brilliant bit",
+      descricao:
+        "Add more cards to this little stack to build out a grid of whatever size and shape you need.",
+    },
+  ];
+
   return (
     <>
       <div id="obras_container">
@@ -24,46 +49,18 @@ function ObrasContainer() {
             </button>
           </div>
 
-          <div id="obras_cards" className="d-flex">
-            <div className="card">
-              <img src="" className="card-img-top" alt="" />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
-              </div>
-            </div>
-            <div className="card">
-              <img src="" className="card-img-top" alt="" />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
-              </div>
-            </div>
-            <div className="card">
-              <img src="" className="card-img-top" alt="" />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary">
-                  Go somewhere
-                </a>
-              </div>
-            </div>
+          <div
+            id="obras_cards"
+            className="d-flex flex-wrap p-4 gap-4 justify-content-center"
+          >
+            {obras.map((obra) => (
+              <Card
+                foto={obra.foto}
+                titulo={obra.titulo}
+                descricao={obra.descricao}
+                key={obra.id}
+              />
+            ))}
           </div>
         </div>
       </div>

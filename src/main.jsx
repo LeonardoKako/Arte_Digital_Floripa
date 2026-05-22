@@ -11,14 +11,14 @@ import "./index.css";
 
 // paginas
 import App from "./App.jsx";
-import SegundaPagina from "./SegundaPagina.jsx";
+import Obras from "./Obras.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/segundaPagina" element={<SegundaPagina />} />
+        <Route path="/obras/:id" element={<Obras />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

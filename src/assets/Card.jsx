@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./css/Card.css"
 
-function Card({ titulo, descricao, foto }) {
+function Card({id, titulo, descricao, foto }) {
   return (
     <>
       <div className="card">
@@ -9,9 +10,10 @@ function Card({ titulo, descricao, foto }) {
         <div className="card-body">
           <h5 className="card-title">{titulo}</h5>
           <p className="card-text">{descricao}</p>
-          <a href="#" className="btn fw-bold">
-            Ver mais...
+          <a href="#" >
+
           </a>
+          <Link to={`/obras/${id}`} className="btn fw-bold">Ver mais...</Link>
         </div>
       </div>
     </>

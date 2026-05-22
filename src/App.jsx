@@ -1,32 +1,16 @@
 import React from "react";
-import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-// Componentes
-
-import Navbar from "./assets/Navbar";
-import Hero from "./assets/Hero";
-import SearchObras from "./assets/SearchObras";
-import ObrasContainer from "./assets/ObrasContainer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Obras from "./pages/Obras/Obras";
 
 function App() {
   return (
-    <>
-      {/* Header */}
-      <header>
-        <Navbar />
-      </header>
-      <main>
-        {/* hero */}
-        <Hero />
-        {/* Header 2 - procurar obras */}
-        <SearchObras />
-        {/* Obras */}
-        <ObrasContainer />
-      </main>
-      {/* Footer */}
-      <footer></footer>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/obras/:id" element={<Obras />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

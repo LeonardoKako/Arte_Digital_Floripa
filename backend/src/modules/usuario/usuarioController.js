@@ -1,49 +1,62 @@
-async function listarUsuarios(req, res, next) {
-    return res.status(200).json([
-        {
-            id: 1,
-            nome: "João",
-            email: "joao@gmail.com"
-        },
-        {
-            id: 2,
-            nome: "Maria",
-            email: "maria@gmail.com"
-        }
-    ]);
+import usuarioService from "./usuarioService.js";
+
+async function listarUsuarios(req, res, next) {  
+    const usuarios = await usuarioService.listarUsuarios();
+    return res.status(200).json({
+        sucesso: true,
+        data: usuarios
+    });
 }
 
 async function listarUsuarioPorId(req, res, next) {
+    const id = Number(req.params.id);
+    const usuario = await usuarioService.listarUsuarioPorId(id);
     return res.status(200).json({
-        usuario: {
-            id: req.params.id,
-            nome: "João"
-        }
+        sucesso: true,
+        data: usuario
     });
 }
 
 async function criarUsuario(req, res, next) {
-    const user = {
-        id: 1, 
-        nome: req.body.nome,
-        email: req.body.email
+    const { nome, email, senha, tipoUsuario } = req.body;
+
+    const usuarioBody = {
+        nome,
+        email, 
+        senha,
+        tipoUsuario
     };
 
-    return res.status(201).json(user);
+    const usuarioCriado = await usuarioService.criarUsuario(usuarioBody);
+
+    return res.status(201).json({
+        sucesso: true,
+        mensagem: "Usuário criado com sucesso",
+        data: usuarioCriado
+    });
 }
 
 async function atualizarUsuario(req, res, next) {
-    const user = {
-        id: req.params.id,
-        nome: req.body.nome,
-        email: req.body.email
-    };
+    const id = Number(req.params.id);
+    const { nome, email, tipoUsuario } = req.body;
 
-    return res.status(200).json(user);
+    const usuarioBody = {
+        nome,
+        email, 
+        tipoUsuario
+    };
+    const usuarioAtualizado = await usuarioService.atualizarUsuario(id, usuarioBody);
+    return res.status(200).json({
+        sucesso: true,
+        mensagem: "Usuário atualizado com sucesso",
+        data: usuarioAtualizado
+    });
 }
 
 async function deletarUsuario(req, res, next) {
-    return res.sendStatus(204);
+    const id = Number(req.params.id);
+    await usuarioService.deletarUsuario(id);
+    return res.status(204).end();
 }
 
 export default {

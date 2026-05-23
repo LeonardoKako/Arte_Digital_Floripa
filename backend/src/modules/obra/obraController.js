@@ -1,55 +1,53 @@
+import obraService from './obraService.js';
+
 async function listarObras(req, res, next) {
-    return res.status(200).json([
-        {
-            id: 1,
-            titulo: "Monalisa",
-            data: "21/05/2026",
-            autorId: 1
-        },
-        {
-            id: 2,
-            titulo: "O grito",
-            data: "21/05/2026",
-            autorId: 2
-        }
-    ]);
+    try {
+        const obras = await obraService.listarObras();
+        return res.status(200).json(obras);
+    } catch (error) {
+        next(error);
+    }
 }
 
 async function listarObraPorId(req, res, next) {
-    return res.status(200).json({
-        obra: {
-            id: req.params.id,
-            titulo: "Monalisa",
-            data: "21/05/2026",
-            autorId: 1
+    try {
+        const obra = await obraService.listarObraPorId(req.params.id);
+
+        if (!obra) {
+            return res.status(404).json({ error: 'Obra não encontrada' });
         }
-    });
+
+        return res.status(200).json({ obra });
+    } catch (error) {
+        next(error);
+    }
 }
 
 async function criarObra(req, res, next) {
-    const obra = {
-        id: 1,
-        titulo: req.body.titulo,
-        data: req.body.data,
-        autorId: req.body.autorId
-    };
-
-    return res.status(201).json(obra);
+    try {
+        const novaObra = await obraService.criarObra(req.body);
+        return res.status(201).json(novaObra);
+    } catch (error) {
+        next(error);
+    }
 }
 
 async function atualizarObra(req, res, next) {
-    const obra = {
-        id: req.params.id,
-        titulo: req.body.titulo,
-        data: req.body.data,
-        autorId: req.body.autorId
-    };
-
-    return res.status(200).json(obra);
+    try {
+        const obraAtualizada = await obraService.atualizarObra(req.params.id, req.body);
+        return res.status(200).json(obraAtualizada);
+    } catch (error) {
+        next(error);
+    }
 }
 
 async function deletarObra(req, res, next) {
-    return res.sendStatus(204);
+    try {
+        await obraService.deletarObra(req.params.id);
+        return res.sendStatus(204);
+    } catch (error) {
+        next(error);
+    }
 }
 
 export default {
@@ -58,4 +56,4 @@ export default {
     criarObra,
     atualizarObra,
     deletarObra
-}
+};

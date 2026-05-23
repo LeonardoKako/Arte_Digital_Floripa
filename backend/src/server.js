@@ -1,4 +1,5 @@
 import express from 'express';
+import 'dotenv/config'
 import usuarioRoutes from './modules/usuario/usuarioRoutes.js';
 import autorRoutes from './modules/autor/autorRoutes.js';
 import obraRoutes from './modules/obra/obraRoutes.js';

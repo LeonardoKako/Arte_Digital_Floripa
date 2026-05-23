@@ -9,7 +9,7 @@ router.get("/listar/:id", usuarioController.listarUsuarioPorId);
 
 router.post("/criar", usuarioController.criarUsuario);
 
-router.put("/atualizar/:id", usuarioController.atualizarUsuario);
+router.patch("/atualizar/:id", usuarioController.atualizarUsuario);
 
 router.delete("/deletar/:id", usuarioController.deletarUsuario);
 

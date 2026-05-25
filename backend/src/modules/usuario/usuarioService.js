@@ -35,7 +35,7 @@ async function criarUsuario(usuarioBody) {
     const emailLimpo = email.trim().toLowerCase();
     const hashSenha = await bcrypt.hash(senha, 10);
 
-    const usuarioCriado = await prisma.teste.create({
+    const usuario = await prisma.teste.create({
         data: {
             nome: nomeLimpo,
             email: emailLimpo,
@@ -44,7 +44,9 @@ async function criarUsuario(usuarioBody) {
         }
     });
 
-    return usuarioCriado;
+    const { senha: _, ...usuarioNovo } = usuario;
+
+    return usuario;
 }
 
 async function atualizarUsuario(id, usuarioBody) {

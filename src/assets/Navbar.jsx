@@ -78,43 +78,45 @@ function Navbar() {
             </ul>
           </div>
         </div>
-
-
       </nav>
-              {/* <!-- offcanvas menu --> */}
-        <div
-          className="offcanvas offcanvas-end"
-          tabIndex="-1"
-          id="offcanvasMenu"
-          aria-labelledby="offcanvasMenuLabel"
-        >
-          <div className="offcanvas-header">
-            <h5 id="offcanvasMenuLabel">Menu</h5>
+      {/* <!-- offcanvas menu --> */}
+      <div
+        className="offcanvas offcanvas-end"
+        tabIndex="-1"
+        id="offcanvasMenu"
+        aria-labelledby="offcanvasMenuLabel"
+      >
+        <div className="offcanvas-header">
+          <h5 id="offcanvasMenuLabel">Menu</h5>
 
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            ></button>
-          </div>
-
-          <div className="offcanvas-body">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <a className="nav-link" href="/sobre">
-                  Sobre
-                </a>
-              </li>
-
-              <li className="nav-item">
-                <a className="nav-link" href="/obras">
-                  Obras
-                </a>
-              </li>
-            </ul>
-          </div>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
         </div>
+
+        <div className="offcanvas-body">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link" href="/sobre">
+                Sobre
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/obras">
+                Obras
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/login">
+                login
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </>
   );
 }

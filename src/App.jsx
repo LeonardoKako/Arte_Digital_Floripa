@@ -12,20 +12,13 @@ import ObrasContainer from "./assets/ObrasContainer";
 function App() {
   return (
     <>
-      {/* Header */}
-      <header>
-        <Navbar />
-      </header>
-      <main>
-        {/* hero */}
-        <Hero />
-        {/* Header 2 - procurar obras */}
-        <SearchObras />
-        {/* Obras */}
-        <ObrasContainer />
-      </main>
+      {/* hero */}
+      <Hero />
+      {/* Header 2 - procurar obras */}
+      <SearchObras />
+      {/* Obras */}
+      <ObrasContainer />
       {/* Footer */}
-      <footer></footer>
     </>
   );
 }

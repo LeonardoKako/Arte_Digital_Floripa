@@ -1,9 +1,9 @@
 import React from "react";
-import "./css/Obras_container.css";
+import "./ObrasContainer.css";
 
 // componentes
 
-import Card from "./Card";
+import Card from "../Card/Card";
 
 function ObrasContainer() {
   var obras = [

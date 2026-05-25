@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/Search.css";
+import "./SearchObras.css";
 
 function SearchObras() {
   return (

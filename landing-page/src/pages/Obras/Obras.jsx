@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Componentes
 
-import Navbar from "./assets/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 
 function Obras() {
   const { id } = useParams();

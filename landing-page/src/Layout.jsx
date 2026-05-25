@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 
 // componentes
 
-import Navbar from "./assets/Navbar";
-import Footer from "./assets/Footer";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
 function Layout() {
   return (

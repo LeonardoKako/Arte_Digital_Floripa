@@ -1,49 +1,80 @@
-async function listarUsuarios(req, res, next) {
-    return res.status(200).json([
-        {
-            id: 1,
-            nome: "João",
-            email: "joao@gmail.com"
-        },
-        {
-            id: 2,
-            nome: "Maria",
-            email: "maria@gmail.com"
-        }
-    ]);
+import usuarioService from "./usuarioService.js";
+
+async function listarUsuarios(req, res, next) { 
+    try {
+        const usuarios = await usuarioService.listarUsuarios();
+        return res.status(200).json({
+            sucesso: true,
+            data: usuarios
+        });
+    } catch(error) {
+        return next(error);
+    }
+    
 }
 
 async function listarUsuarioPorId(req, res, next) {
-    return res.status(200).json({
-        usuario: {
-            id: req.params.id,
-            nome: "João"
-        }
-    });
+    try {
+        const id = Number(req.params.id);
+        const usuario = await usuarioService.listarUsuarioPorId(id);
+        return res.status(200).json({
+            sucesso: true,
+            data: usuario
+        });
+    } catch(error) {
+        return next(error);
+    }   
 }
 
 async function criarUsuario(req, res, next) {
-    const user = {
-        id: 1, 
-        nome: req.body.nome,
-        email: req.body.email
-    };
-
-    return res.status(201).json(user);
+    try {
+        const { nome, email, senha, tipoUsuario } = req.body;
+        const usuarioBody = {
+            nome,
+            email, 
+            senha,
+            tipoUsuario
+        };
+        const usuarioCriado = await usuarioService.criarUsuario(usuarioBody);
+        return res.status(201).json({
+            sucesso: true,
+            mensagem: "Usuário criado com sucesso",
+            data: usuarioCriado
+        });
+    } catch(error) {
+        return next(error);
+    }    
 }
 
 async function atualizarUsuario(req, res, next) {
-    const user = {
-        id: req.params.id,
-        nome: req.body.nome,
-        email: req.body.email
-    };
-
-    return res.status(200).json(user);
+    try {
+        const id = Number(req.params.id);
+        const { nome, email, tipoUsuario } = req.body;
+        const usuarioBody = {
+            nome,
+            email, 
+            tipoUsuario
+        };
+        const usuarioAtualizado = await usuarioService.atualizarUsuario(id, usuarioBody);
+        return res.status(200).json({
+            sucesso: true,
+            mensagem: "Usuário atualizado com sucesso",
+            data: usuarioAtualizado
+        });
+    } catch(error) {
+        return next(error);
+    }
 }
 
 async function deletarUsuario(req, res, next) {
-    return res.sendStatus(204);
+    try {
+        const id = Number(req.params.id);
+        await usuarioService.deletarUsuario(id);
+        return res.status(204).end();
+    } catch(error) {
+        return next(error);
+    }
+    
 }
 
 export default {

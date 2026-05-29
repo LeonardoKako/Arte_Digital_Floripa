@@ -1,9 +1,15 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+
+// paginas 
+
 import Home from "./pages/Home/Home";
 import Obras from "./pages/Obras/Obras";
-import Layout from "./Layout";
 import Login from "./pages/Login/Login"
+import Cadastro from "./pages/Cadastro/Cadastro";
+import EsqueciSenha from "./pages/EsqueciSenha/EsqueciSenha";
+import NovaObra from "./pages/NovaObra/NovaObra";
 
 function App() {
   return (
@@ -14,6 +20,10 @@ function App() {
           <Route path="/obras/:id" element={<Obras />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/esqueciSenha" element={<EsqueciSenha />} />
+        <Route path="/novaObra" element={<NovaObra />} />
+        
       </Routes>
     </BrowserRouter>
   );

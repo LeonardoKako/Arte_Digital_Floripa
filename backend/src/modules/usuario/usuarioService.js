@@ -46,17 +46,16 @@ async function atualizarUsuario(idCadastro, registroBody) {
     await listarUsuarioPorId(idCadastro);
 
     const { nome, email, tipoUsuario } = registroBody;
-    const nomeLimpo = nome.trim();
-    const emailLimpo = email.trim().toLowerCase();
 
+    const dadosParaAtualizar = {};
+
+    if (nome) dadosParaAtualizar.nome =  nome.trim();
+    if (email) dadosParaAtualizar.email = email.trim().toLowerCase();
+    if (tipoUsuario) dadosParaAtualizar.tipoUsuario = tipoUsuario;
 
     const cadastroAtualizado = await prisma.cadastro.update({
         where: { id_cadastro: idCadastro },
-        data: {
-            nome: nomeLimpo,
-            email: emailLimpo,
-            tipo_usuario: tipoUsuario
-        }
+        data: dadosParaAtualizar
     });
 
     if(tipoUsuario) {

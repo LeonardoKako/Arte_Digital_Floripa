@@ -23,7 +23,14 @@ async function listarUsuarioPorId(idCadastro) {
         
 
         const usuario = await prisma.cadastro.findUnique({
-            where: { id_cadastro: idCadastro }
+            where: { id_cadastro: idCadastro },
+            select: {
+                id_cadastro: true,
+                nome: true,
+                email: true,
+                tipo_usuario: true,
+                data_cadastro: true
+            }
         });
 
         if (!usuario) throw new Error('Usuário não encontrado');

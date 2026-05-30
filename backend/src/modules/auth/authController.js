@@ -40,6 +40,20 @@ async function cadastrarUsuario(req, res, next) {
     }    
 }
 
+// async function alterarSenha(req, res, next) {
+//     try {
+//         const { senhaAtual, senhaNova } = req.body;
+
+//         await authService.alterarSenha(req.usuario.id_cadastro, senhaAtual, senhaNova);
+//         return res.status(200).json({
+//             sucesso: true,
+//             mensagem: "Senha alterada com sucesso"
+//         });
+//     } catch(error) {
+//         throw new Error("Error: " + error);
+//     }
+// }
+
 async function me(req, res, next) {
     return res.status(200).json({
         sucesso: true,
@@ -50,5 +64,6 @@ async function me(req, res, next) {
 export default {
     login,
     cadastrarUsuario,
+    // alterarSenha,
     me
 }

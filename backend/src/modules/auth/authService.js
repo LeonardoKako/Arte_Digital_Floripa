@@ -57,7 +57,26 @@ async function login(loginBody) {
     };
 }
 
+async function alterarSenha(idCadastro, senhaAtual, novaSenha) {
+    const usuario = await prisma.cadastro.findUnique({
+        where: { id_cadastro: idCadastro }
+    });
+
+    const senhaValida = await bcrypt.compare(senhaAtual, usuario.senha);
+    if(!senhaValida) throw new Error('Senha atual incorreta');
+
+    const hashNovaSenha = await bcrypt.hash(novaSenha, 10);
+
+    await prisma.cadastro.update({
+        where: { id_cadastro: idCadastro },
+        data: {
+            senha: hashNovaSenha
+        }
+    });
+}
+
 export default {
     cadastrarUsuario,
-    login
+    login,
+    alterarSenha
 }

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import userService from "../modules/usuario/usuarioService.js";
+import usuarioService from "../modules/usuario/usuarioService.js";
 
 export const authMiddleware = async (req, res, next) => {
     const { authorization } = req.headers;

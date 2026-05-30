@@ -1,16 +1,23 @@
 import authService from "./authService.js";
 
 async function login(req, res, next) {
-    const response = {
-        token: "mock-token-123",
-        usuario: {
-            id: 1,
-            nome: "João",
-            email: req.body.email
-        }
-    };
+    try {
+        const { email, senha } = req.body;
 
-    return res.status(200).json(response);
+        const loginBody = {
+            email,
+            senha
+        };
+        
+        const loginResponse = await authService.login(loginBody);
+
+        return res.status(200).json({
+            sucesso: true,
+            ...loginResponse
+        });
+    } catch(error){
+        throw new Error("Erro: " + error);
+    }   
 }
 
 async function cadastrarUsuario(req, res, next) {
@@ -35,11 +42,8 @@ async function cadastrarUsuario(req, res, next) {
 
 async function me(req, res, next) {
     return res.status(200).json({
-        usuario: {
-            id: 1,
-            nome: "João",
-            email: "joao@gmail.com"
-        }
+        sucesso: true,
+        usuario: req.usuario
     });
 }
 

@@ -1,4 +1,7 @@
 import prisma from "../../db/prisma.js";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import 'dotenv/config'
 
 async function cadastrarUsuario(cadastroBody) {
     const { nome, email, senha, tipoUsuario } = cadastroBody;
@@ -31,6 +34,30 @@ async function cadastrarUsuario(cadastroBody) {
     return { ...cadastroSemSenha, usuario: resultado.usuario };
 }
 
+async function login(loginBody) {
+    const { email, senha } = loginBody;
+
+    const usuario = await prisma.cadastro.findFirst({
+        where: { email: email }
+    });
+
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+
+    const token = jwt.sign(
+        { id_cadastro: usuario.id_cadastro },
+        process.env.JWT_PASSWORD,
+        { expiresIn: '1d' }
+    );
+
+    const { senha: _, ...usuarioLogadoSemSenha } = usuario;
+
+    return {
+        usuario: usuarioLogadoSemSenha,
+        token: token
+    };
+}
+
 export default {
-    cadastrarUsuario
+    cadastrarUsuario,
+    login
 }

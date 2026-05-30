@@ -6,6 +6,6 @@ const router = Router();
 
 router.post("/login", authController.login);
 router.post("/registro", authMiddleware, authController.cadastrarUsuario);
-router.get("/me", authController.me);
+router.get("/me", authMiddleware, authController.me);
 
 export default router;

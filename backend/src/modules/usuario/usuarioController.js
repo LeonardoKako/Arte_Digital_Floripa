@@ -26,26 +26,6 @@ async function listarUsuarioPorId(req, res, next) {
     }   
 }
 
-async function criarUsuario(req, res, next) {
-    try {
-        const { nome, email, senha, tipoUsuario } = req.body;
-        const usuarioBody = {
-            nome,
-            email, 
-            senha,
-            tipoUsuario
-        };
-        const usuarioCriado = await usuarioService.criarUsuario(usuarioBody);
-        return res.status(201).json({
-            sucesso: true,
-            mensagem: "Usuário criado com sucesso",
-            data: usuarioCriado
-        });
-    } catch(error) {
-        return next(error);
-    }    
-}
-
 async function atualizarUsuario(req, res, next) {
     try {
         const id = Number(req.params.id);
@@ -80,7 +60,6 @@ async function deletarUsuario(req, res, next) {
 export default {
     listarUsuarios,
     listarUsuarioPorId,
-    criarUsuario,
     atualizarUsuario,
     deletarUsuario
 }

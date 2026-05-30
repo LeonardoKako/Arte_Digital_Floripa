@@ -1,11 +1,16 @@
 import prisma from '../../db/prisma.js'
-import bcrypt from 'bcrypt';
 
-// Banco ainda não foi criado
-// Só trocar test pela coluna
 async function listarUsuarios() {
     try {
-        const usuarios = await prisma.test.findMany();
+        const usuarios = await prisma.cadastro.findMany({
+            select: {
+                id_cadastro: true,
+                nome: true,
+                email: true,
+                tipo_usuario: true,
+                data_cadastro: true
+            }
+        });
         return usuarios;
     } catch (error) {
         throw new Error("Mensagem: " + error);
@@ -13,14 +18,22 @@ async function listarUsuarios() {
     
 }
 
-async function listarUsuarioPorId(id) {  
+async function listarUsuarioPorId(idCadastro) {  
     try {
-        // Confirmar se ID vai ser número
-        const idUsuario = Number(id);
+        
 
-        const usuario = await prisma.test.findUnique({
-            where: { id: idUsuario }
+        const usuario = await prisma.cadastro.findUnique({
+            where: { id_cadastro: idCadastro },
+            select: {
+                id_cadastro: true,
+                nome: true,
+                email: true,
+                tipo_usuario: true,
+                data_cadastro: true
+            }
         });
+
+        if (!usuario) throw new Error('Usuário não encontrado');
 
         return usuario;
     } catch(error) {
@@ -28,65 +41,48 @@ async function listarUsuarioPorId(id) {
     }
 }
 
-async function criarUsuario(usuarioBody) {
-    const { nome, email, senha, tipoUsuario } = usuarioBody;
+async function atualizarUsuario(idCadastro, registroBody) {
+    // Aproveita função de listarPorId e verifica se o usuário já existe
+    await listarUsuarioPorId(idCadastro);
 
-    const nomeLimpo = nome.trim();
-    const emailLimpo = email.trim().toLowerCase();
-    const hashSenha = await bcrypt.hash(senha, 10);
+    const { nome, email, tipoUsuario } = registroBody;
 
-    const usuario = await prisma.teste.create({
-        data: {
-            nome: nomeLimpo,
-            email: emailLimpo,
-            senha: hashSenha,
-            tipoUsuario: tipoUsuario
-        }
+    const dadosParaAtualizar = {};
+
+    if (nome) dadosParaAtualizar.nome =  nome.trim();
+    if (email) dadosParaAtualizar.email = email.trim().toLowerCase();
+    if (tipoUsuario) dadosParaAtualizar.tipoUsuario = tipoUsuario;
+
+    const cadastroAtualizado = await prisma.cadastro.update({
+        where: { id_cadastro: idCadastro },
+        data: dadosParaAtualizar
     });
 
-    const { senha: _, ...usuarioNovo } = usuario;
+    if(tipoUsuario) {
+        const usuarioAtualizado = await prisma.usuario.update({
+            where: { id_cadastro: idCadastro },
+            data: { tipo_usuario: tipoUsuario }
+        });
+    }
 
-    return usuario;
+    const { senha: _, ...cadastroSemSenha } = cadastroAtualizado;
+
+    return cadastroSemSenha;
 }
 
-async function atualizarUsuario(id, usuarioBody) {
-    // Verificar se o id vai ser Number no banco
-    const idUsuario = Number(id);
+async function deletarUsuario(idCadastro) {
 
     // Aproveita função de listarPorId e verifica se o usuário já existe
-    await listarUsuarioPorId(idUsuario);
-
-    const { nome, email, tipoUsuario } = usuarioBody;
-    const nomeLimpo = nome.trim();
-    const emailLimpo = email.trim().toLowerCase();
-
-    const usuarioAtualizado = await prisma.teste.update({
-        where: { id: idUsuario },
-        data: {
-            nome: nomeLimpo,
-            email: emailLimpo,
-            tipoUsuario: tipoUsuario
-        }
-    });
-
-    return usuarioAtualizado;
-}
-
-async function deletarUsuario(id) {
-    const idUsuario = Number(idUsuario);
-
-    // Aproveita função de listarPorId e verifica se o usuário já existe
-    await listarUsuarioPorId(idUsuario);
-
-    const usuarioDeletado = await prisma.teste.delete({
-        where: { id: idUsuario }
+    await listarUsuarioPorId(idCadastro);
+    
+    const registro = await prisma.cadastro.delete({
+        where: { id_cadastro: idCadastro }
     });
 }
 
 export default {
     listarUsuarios,
     listarUsuarioPorId,
-    criarUsuario,
     atualizarUsuario,
     deletarUsuario
 }

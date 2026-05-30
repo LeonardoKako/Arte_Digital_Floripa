@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import userService from "../modules/usuario/usuarioService.js";
-import usuarioService from '../modules/usuario/usuarioService.js';
 
 export const authMiddleware = async (req, res, next) => {
     const { authorization } = req.headers;
@@ -18,13 +17,11 @@ export const authMiddleware = async (req, res, next) => {
     const token = authorization.split(' ')[1];
 
     try {
-        const { id } = jwt.verify(token, process.env.JWT_PASSWORD);
+        const { id_cadastro } = jwt.verify(token, process.env.JWT_PASSWORD);
 
-        const usuario = await usuarioService.listarUsuarioPorId(id);
+        const usuarioLogado = await usuarioService.listarUsuarioPorId(id_cadastro);
 
-        const { password: _, ...usuarioLogado } = usuario;
-
-        req.user = usuarioLogado;
+        req.usuario = usuarioLogado;
 
         // está tudo certo, pode executar próxima função
         next();

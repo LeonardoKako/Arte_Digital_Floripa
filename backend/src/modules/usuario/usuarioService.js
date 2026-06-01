@@ -1,4 +1,6 @@
-import prisma from '../../db/prisma.js'
+import prisma from '../../db/prisma.js';
+import emailService from "../../services/emailService.js";
+import crypto from 'crypto';
 
 async function listarUsuarios() {
     try {
@@ -41,6 +43,37 @@ async function listarUsuarioPorId(idCadastro) {
     }
 }
 
+async function cadastrarUsuario(cadastroBody) {
+    // Token para completar cadastro com segurança
+    const token = crypto.randomBytes(32).toString('hex');
+    // Expiração do token = agora + 24 horas
+    const expiracao = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const { email } = cadastroBody;
+
+    const emailLimpo = email.trim().toLowerCase();
+
+    const resultado = await prisma.$transaction(async (tx) => {
+        const cadastro = await tx.cadastro.create({
+                data: {
+                email: emailLimpo,
+                tipo_usuario: "admin",
+                token_temporario: token,
+                token_expiracao: expiracao
+            }
+        });
+        const usuario = await tx.usuario.create({
+            data: {
+                tipo_usuario: 'admin',
+                id_cadastro: cadastro.id_cadastro
+            }
+        });   
+        
+        return { cadastro, usuario };
+    });
+
+    await emailService.enviarEmailBoasVindas(emailLimpo, token);
+}
+
 async function atualizarUsuario(idCadastro, registroBody) {
     // Aproveita função de listarPorId e verifica se o usuário já existe
     await listarUsuarioPorId(idCadastro);
@@ -65,7 +98,7 @@ async function atualizarUsuario(idCadastro, registroBody) {
         });
     }
 
-    const { senha: _, ...cadastroSemSenha } = cadastroAtualizado;
+    const { senha: _, token_temporario: __, token_expiracao: __, ...cadastroSemSenha } = cadastroAtualizado;
 
     return cadastroSemSenha;
 }
@@ -83,6 +116,7 @@ async function deletarUsuario(idCadastro) {
 export default {
     listarUsuarios,
     listarUsuarioPorId,
+    cadastrarUsuario,
     atualizarUsuario,
     deletarUsuario
 }

@@ -8,6 +8,8 @@ router.get("/listar", authMiddleware, usuarioController.listarUsuarios);
 
 router.get("/listar/:id", authMiddleware, usuarioController.listarUsuarioPorId);
 
+router.post("/cadastro", authMiddleware, usuarioController.cadastrarUsuario);
+
 router.patch("/atualizar/:id", authMiddleware, usuarioController.atualizarUsuario);
 
 router.delete("/deletar/:id", authMiddleware, usuarioController.deletarUsuario);

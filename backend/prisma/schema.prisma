@@ -15,18 +15,19 @@ datasource db {
 
 model cadastro {
   id_cadastro   Int       @id @default(autoincrement())
-  tipo_usuario  String    @db.VarChar(50)
-  nome          String    @db.VarChar(100)
+  tipo_usuario  String?    @db.VarChar(50)
+  nome          String?    @db.VarChar(100)
   email         String    @unique @db.VarChar(150)
-  senha         String    @db.VarChar(255)
+  senha         String?    @db.VarChar(255)
   data_cadastro DateTime? @default(now()) @db.Timestamp(6)
-
+  token_temporario  String?   @db.VarChar(255)
+  token_expiracao   DateTime? @db.Timestamp(6)
   usuario usuario?
 }
 
 model usuario {
   id_usuario   Int    @id @default(autoincrement())
-  tipo_usuario String @db.VarChar(50)
+  tipo_usuario String? @db.VarChar(50)
 
   id_cadastro Int @unique
 

@@ -5,7 +5,8 @@ import { authMiddleware } from '../../middleware/authMiddleware.js';
 const router = Router();
 
 router.post("/login", authController.login);
-router.post("/registro", authMiddleware, authController.cadastrarUsuario);
+router.post("/completar-cadastro/:token", authController.completarCadastro);
+// router.patch("/senha", authMiddleware, authController.alterarSenha);
 router.get("/me", authMiddleware, authController.me);
 
 export default router;

@@ -32,3 +32,12 @@ export const authMiddleware = async (req, res, next) => {
         return next(error);
     }   
 }
+
+// export const autorizar = (...tiposPermitidos) => {
+//     return (req, res, next) => {
+//         if(!tiposPermitidos.includes(req.usuario.tipo_usuario)) {
+//             return res.status(403).json({ mensagem: "Não autorizado!"});
+//         }
+//         next();
+//     }
+// }

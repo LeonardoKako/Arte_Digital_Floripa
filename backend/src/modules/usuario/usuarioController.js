@@ -26,6 +26,20 @@ async function listarUsuarioPorId(req, res, next) {
     }   
 }
 
+async function cadastrarUsuario(req, res, next) {
+    try {
+        const { email } = req.body;
+        
+        await usuarioService.cadastrarUsuario({ email });
+        return res.status(201).json({
+            sucesso: true,
+            mensagem: "Usuário cadastrado com sucesso! Um email foi enviado com as instruções de acesso."
+        });
+    } catch(error) {
+        return next(error);
+    }    
+}
+
 async function atualizarUsuario(req, res, next) {
     try {
         const id = Number(req.params.id);
@@ -60,6 +74,7 @@ async function deletarUsuario(req, res, next) {
 export default {
     listarUsuarios,
     listarUsuarioPorId,
+    cadastrarUsuario,
     atualizarUsuario,
     deletarUsuario
 }

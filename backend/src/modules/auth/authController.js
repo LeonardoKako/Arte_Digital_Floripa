@@ -20,24 +20,26 @@ async function login(req, res, next) {
     }   
 }
 
-async function cadastrarUsuario(req, res, next) {
+async function completarCadastro(req, res, next) {
     try {
-        const { nome, email, senha, tipoUsuario } = req.body;
-        const registroBody = {
+        const token = req.params.token;
+
+        const { nome, senha } = req.body;
+        const cadastroBody = {
             nome,
-            email, 
-            senha,
-            tipoUsuario
-        };
-        const registro = await authService.cadastrarUsuario(registroBody);
+            senha
+        }
+
+        const cadastroCompleto = await authService.completarCadastro(token, cadastroBody);
+
         return res.status(201).json({
             sucesso: true,
-            mensagem: "Usuário criado com sucesso",
-            data: registro
+            mensagem: "Cadastro realizado com sucesso",
+            data: cadastroCompleto
         });
     } catch(error) {
         return next(error);
-    }    
+    }
 }
 
 // async function alterarSenha(req, res, next) {
@@ -63,7 +65,7 @@ async function me(req, res, next) {
 
 export default {
     login,
-    cadastrarUsuario,
+    completarCadastro,
     // alterarSenha,
     me
 }

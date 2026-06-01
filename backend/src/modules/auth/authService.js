@@ -1,37 +1,34 @@
 import prisma from "../../db/prisma.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import 'dotenv/config'
+import 'dotenv/config';
 
-async function cadastrarUsuario(cadastroBody) {
-    const { nome, email, senha, tipoUsuario } = cadastroBody;
+async function completarCadastro(token, cadastroBody) {
+    const cadastro = await prisma.cadastro.findFirst({
+        where: { 
+            token_temporario: token,
+            token_expiracao: { gt: new Date() }
+         }
+    });
+    if(!cadastro) throw new Error("Token inválido ou expirado!");
 
+    const { nome, senha } = cadastroBody;
     const nomeLimpo = nome.trim();
-    const emailLimpo = email.trim().toLowerCase();
     const hashSenha = await bcrypt.hash(senha, 10);
 
-    const resultado = await prisma.$transaction(async (tx) => {
-        const cadastro = await tx.cadastro.create({
-                data: {
-                nome: nomeLimpo,
-                email: emailLimpo,
-                senha: hashSenha,
-                tipo_usuario: tipoUsuario
-            }
-        });
-        const usuario = await tx.usuario.create({
-            data: {
-                tipo_usuario: tipoUsuario,
-                id_cadastro: cadastro.id_cadastro
-            }
-        });    
-        
-        return { cadastro, usuario };
+    const cadastroAtualizado = await prisma.cadastro.update({
+        where: { id_cadastro: cadastro.id_cadastro },
+        data: {
+            nome: nomeLimpo,
+            senha: hashSenha,
+            token_temporario: null,
+            token_expiracao: null
+        }
     });
 
-    const { senha: _, ...cadastroSemSenha } = resultado.cadastro;
+    const { senha: _, token_temporario: __, token_expiracao: ___, ...cadastroCompleto } = cadastroAtualizado;
 
-    return { ...cadastroSemSenha, usuario: resultado.usuario };
+    return cadastroCompleto;
 }
 
 async function login(loginBody) {
@@ -49,7 +46,7 @@ async function login(loginBody) {
         { expiresIn: '1d' }
     );
 
-    const { senha: _, ...usuarioLogadoSemSenha } = usuario;
+    const { senha: _, token_temporario: __, token_expiracao: ___, ...usuarioLogadoSemSenha } = usuario;
 
     return {
         usuario: usuarioLogadoSemSenha,
@@ -76,7 +73,7 @@ async function alterarSenha(idCadastro, senhaAtual, novaSenha) {
 }
 
 export default {
-    cadastrarUsuario,
+    completarCadastro,
     login,
     alterarSenha
 }

@@ -98,7 +98,7 @@ async function atualizarUsuario(idCadastro, registroBody) {
         });
     }
 
-    const { senha: _, token_temporario: __, token_expiracao: __, ...cadastroSemSenha } = cadastroAtualizado;
+    const { senha: _, token_temporario: __, token_expiracao: ___, ...cadastroSemSenha } = cadastroAtualizado;
 
     return cadastroSemSenha;
 }

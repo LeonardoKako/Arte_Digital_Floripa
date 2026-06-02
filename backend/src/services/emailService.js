@@ -24,6 +24,23 @@ async function enviarEmailBoasVindas(email, token) {
     });
 }
 
+async function enviarEmailRecuperarSenha(email, token) {
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Recuperação de senha',
+        html: `
+            <h1>Recuperação de senha</h1>
+            <p>Recebemos uma solicitação para redefinir a senha da sua conta na plataforma Arte Digital Floripa.</p>
+            <p><b>Email:</b> ${email}</p>
+            <p>Clique no link abaixo para criar uma nova senha:</p>
+            <a href="${process.env.FRONTEND_URL}/recuperar-senha?token=${token}">Redefinir minha senha</a>
+            <p>Este link expira em 24 horas. Se você não solicitou a recuperação de senha, ignore este email.</p>
+        `
+    })
+}
+
 export default {
-    enviarEmailBoasVindas
+    enviarEmailBoasVindas,
+    enviarEmailRecuperarSenha
 }

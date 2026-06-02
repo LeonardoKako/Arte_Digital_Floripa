@@ -1,50 +1,97 @@
+import autorService from "./autorService.js";
+
 async function listarAutores(req, res, next) {
-    return res.status(200).json([
-        {
-            id: 1,
-            nome: "Pablo Picasso",
-            nacionalidade: "Espanhol"
-        },
-        {
-            id: 2,
-            nome: "Van gogh",
-            nacionalidade: "Holândes"
-        }
-    ]);
+    try {
+        const autores = await autorService.listarAutores();
+
+        return res.status(200).json({
+            sucesso: true,
+            data: autores
+        });
+    } catch (error) {
+        return next(error);
+    }
 }
 
 async function listarAutorPorId(req, res, next) {
-    return res.status(200).json({
-        autor: {
-            id: req.params.id,
-            nome: "Pablo Picasso",
-            nacionalidade: "Espanhol"
+    try {
+        const id = req.params.id;
+        const autor = await autorService.listarAutorPorId(id);
+
+        // If para lidar com o caso de o autor nao existir
+        if (!autor) {
+            return res.status(404).json({
+                sucesso: false,
+                erro: "Autor nao encontrado."
+            });
         }
-    });
+
+        return res.status(200).json({
+            sucesso: true,
+            data: autor
+        });
+        // Catch para lidar com possíveis entradas de Id inválido, como palavras, letras etc.
+    } catch (error) {
+        return next(error);
+    }
 }
 
 async function criarAutor(req, res, next) {
-    const autor = {
-        id: 1,
-        nome: req.body.nome,
-        nacionalidade: req.body.nacionalidade
-    };
+    try {
+        const novoAutor = await autorService.criarAutor(req.body);
 
-    return res.status(201).json(autor);
+        return res.status(201).json({
+            sucesso: true,
+            mensagem: "Autor criado com sucesso.",
+            data: novoAutor
+        });
+    } catch (error) {
+        return next(error);
+    }
 }
 
 async function atualizarAutor(req, res, next) {
-    const autor = {
-        id: req.params.id,
-        nome: req.body.nome,
-        nacionalidade: req.body.nacionalidade
-    };
+    try {
+        const id = req.params.id;
+        const dados = req.body;
 
-    return res.status(200).json(autor);
+        // O Service vai verificar se o ID existe e validar os dados
+        const autorAtualizado = await autorService.atualizarAutor(id, dados);
+
+        if (!autorAtualizado) {
+            return res.status(404).json({ 
+            sucesso: false, 
+            erro: "Autor não encontrado."
+        });
+        }
+
+        return res.status(200).json({
+            sucesso: true,
+            mensagem: "Autor atualizado com sucesso.",
+            data: autorAtualizado
+        });
+    } catch (error) {
+        return next(error);
+    }
 }
 
 async function deletarAutor(req, res, next) {
-    return res.sendStatus(204);
+    try {
+        const id = req.params.id;
+
+        await autorService.deletarAutor(id);
+
+        if (!autorAtualizado) {
+            return res.status(404).json({ 
+            sucesso: false, 
+            erro: "Autor não encontrado."
+        });
+        }
+
+        return res.status(204).end();
+    } catch (error) {
+        return next(error);
+    }
 }
 
 export default {

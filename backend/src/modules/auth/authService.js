@@ -2,6 +2,8 @@ import prisma from "../../db/prisma.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
+import crypto from 'crypto';
+import emailService from "../../services/emailService.js";
 
 async function completarCadastro(token, cadastroBody) {
     const cadastro = await prisma.cadastro.findFirst({
@@ -39,6 +41,7 @@ async function login(loginBody) {
     });
 
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    if (!senhaValida) throw new Error('Credenciais inválidas');
 
     const token = jwt.sign(
         { id_cadastro: usuario.id_cadastro },
@@ -52,6 +55,49 @@ async function login(loginBody) {
         usuario: usuarioLogadoSemSenha,
         token: token
     };
+}
+
+async function recuperarSenha(email) {
+
+    const emailLimpo = email.trim().toLowerCase();
+    const usuario = await prisma.cadastro.findUnique({
+        where: { email: emailLimpo }
+    });
+
+    // Não lança erro para não mostrar se email existe ou não no sistema
+    if(!usuario) return;
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiracao = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await prisma.cadastro.update({
+        where: { id_cadastro: usuario.id_cadastro },
+        data: {
+            token_temporario: token,
+            token_expiracao: expiracao
+        }
+    });
+
+    await emailService.enviarEmailRecuperarSenha(emailLimpo, token);
+}
+
+async function redefinirSenha(token, novaSenha) {
+    const usuario = await prisma.cadastro.findFirst({
+        where: { 
+            token_temporario: token,
+            token_expiracao: { gt: new Date() }
+        }
+    });
+    if(!usuario) throw new Error("Token inválido ou expirado.");
+
+    const hashNovaSenha = await bcrypt.hash(novaSenha, 10);
+
+    await prisma.cadastro.update({
+        where: { id_cadastro: usuario.id_cadastro },
+        data: {
+            senha: hashNovaSenha
+        }
+    });
 }
 
 async function alterarSenha(idCadastro, senhaAtual, novaSenha) {
@@ -75,5 +121,7 @@ async function alterarSenha(idCadastro, senhaAtual, novaSenha) {
 export default {
     completarCadastro,
     login,
+    recuperarSenha,
+    redefinirSenha,
     alterarSenha
 }

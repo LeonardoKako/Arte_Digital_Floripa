@@ -16,7 +16,7 @@ async function login(req, res, next) {
             ...loginResponse
         });
     } catch(error){
-        throw new Error("Erro: " + error);
+        return next(error);
     }   
 }
 
@@ -38,6 +38,37 @@ async function completarCadastro(req, res, next) {
             data: cadastroCompleto
         });
     } catch(error) {
+        return next(error);
+    }
+}
+
+async function recuperarSenha(req, res, next) {
+    try {
+        const { email } = req.body;
+
+        await authService.recuperarSenha(email);
+
+        return res.status(200).json({
+            sucesso: true,
+            mensagem: 'Se este email estiver cadastrado, você receberá as instruções em breve.'
+        });
+    } catch(error) {
+        return next(error);
+    }
+}
+
+async function redefinirSenha(req, res, next) {
+    try {
+        const token = req.params.token;
+        const { senha } = req.body;
+
+        await authService.redefinirSenha(token, senha);
+
+        return res.status(200).json({
+            sucesso: true,
+            mensagem: "Senha redefinida com sucesso."
+        });
+    } catch(error){
         return next(error);
     }
 }
@@ -66,6 +97,8 @@ async function me(req, res, next) {
 export default {
     login,
     completarCadastro,
+    recuperarSenha,
+    redefinirSenha,
     // alterarSenha,
     me
 }

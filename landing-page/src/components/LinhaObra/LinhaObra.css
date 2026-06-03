@@ -1,0 +1,16 @@
+#linha_thumb {
+  width: 129px;
+  height: 90px;
+  border-radius: 16px;
+}
+
+#linha_nome,
+#linha_artista,
+#linha_ano,
+#linha_categoria {
+  line-height: 90px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+}

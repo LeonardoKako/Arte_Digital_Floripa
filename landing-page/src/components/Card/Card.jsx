@@ -13,7 +13,7 @@ function Card({id, titulo, descricao, foto }) {
           <a href="#" >
 
           </a>
-          <Link to={`/obras/${id}`} className="btn fw-bold">Ver mais...</Link>
+          <Link id="ver-mais" to={`/obras/${id}`} className="btn fw-bold">Ver mais...</Link>
         </div>
       </div>
     </>

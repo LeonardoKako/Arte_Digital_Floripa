@@ -36,65 +36,25 @@
 }
 
 #btn_obras {
-  width: 76px;
+  width: 80px;
   height: 47px;
   font-family: "Inter";
-  font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  line-height: 145%;
-  /* ou 23px */
-  display: flex;
-  align-items: center;
+  line-height: 30px;
   text-align: center;
-  letter-spacing: -0.005em;
   color: #ffffff;
-
-  /* Auto layout por dentro */
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-}
-
-#btn_sobre {
-  width: 76px;
-  height: 47px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 145%;
-  /* ou 23px */
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: -0.005em;
-  color: #000000;
-
-  /* Auto layout por dentro */
-  flex: none;
-  order: 0;
-  flex-grow: 0;
+  border-radius: 15px;
 }
 
 #btn_menu {
   width: 76px;
   height: 47px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
   line-height: 145%;
   /* ou 23px */
   display: flex;
   align-items: center;
   text-align: center;
-  letter-spacing: -0.005em;
   color: #000000;
   margin-left: 25px;
-
-  /* Auto layout por dentro */
-  flex: none;
-  order: 0;
-  flex-grow: 0;
 }

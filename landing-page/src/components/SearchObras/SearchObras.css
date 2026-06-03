@@ -23,3 +23,7 @@
     border: 1px solid black;
     border-right: none;
 }
+
+#botao_procurar:hover {
+  background-color: rgba(0, 0, 0, 0.178);
+}

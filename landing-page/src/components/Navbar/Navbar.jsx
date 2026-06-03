@@ -36,16 +36,6 @@ function Navbar() {
           >
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a
-                  id="btn_sobre"
-                  className="nav-link active"
-                  aria-current="page"
-                  href="/sobre"
-                >
-                  Sobre
-                </a>
-              </li>
-              <li className="nav-item">
                 <a id="btn_obras" className=" btn btn-dark" href="/obras">
                   Obras
                 </a>
@@ -62,8 +52,8 @@ function Navbar() {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="55"
+                    height="55"
                     fill="black"
                     className="bi bi-list"
                     viewBox="0 0 16 16"

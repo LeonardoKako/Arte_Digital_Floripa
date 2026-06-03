@@ -21,7 +21,7 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/esqueciSenha" element={<EsqueciSenha />} />
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
         <Route path="/novaObra" element={<NovaObra />} />
         
       </Routes>

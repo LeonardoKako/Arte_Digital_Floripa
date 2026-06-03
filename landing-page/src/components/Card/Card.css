@@ -2,3 +2,7 @@
 .card {
     width: 18rem;
 }
+
+#ver-mais:hover{
+    color: rgba(0, 0, 0, 0.548);
+}

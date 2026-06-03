@@ -1,0 +1,112 @@
+#titulo_no {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  color: #000000;
+}
+
+#sub_titulo_no {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #000000;
+  opacity: 0.5;
+}
+
+#file_btn_container {
+  border: 1px solid black;
+}
+
+#btn_modal_no {
+  width: 273px;
+  height: 167px;
+  background-color: #f4f4f4;
+  border-radius: 16px;
+  margin: 0 auto;
+}
+
+#nome_no,
+#ano_no,
+#descricao_no {
+  border-radius: 30px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+#categoria_no {
+  border-radius: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+#descricao_no {
+  height: 153px;
+}
+
+.titulo_item_no {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+}
+
+#salvar_btn > button {
+  width: 84px;
+  height: 36px;
+  text-align: center;
+  line-height: 18px;
+  background-color: #c1baba;
+  border-radius: 9px;
+  color: black;
+  margin-top: 100px;
+}
+
+#salvar_btn > button:hover {
+  background-color: #a09797;
+}
+
+#container_obras_no {
+  width: 1280px;
+}
+
+#container_resultado {
+  width: 1178px;
+  min-height: 718px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 4px;
+  margin: 20px auto;
+}
+
+#container_procura {
+  width: 1178px;
+  margin: 0 auto;
+}
+
+#limpar_filtros,
+#categoria_select,
+#ano_select,
+#btn_nova_obra {
+  width: 187px;
+  height: 57px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#limpar_filtros:hover {
+  background-color: rgb(226, 219, 219);
+}
+
+#categoria_select, #ano_select:hover {
+  cursor: pointer;
+}
+
+#procurar_obra {
+  width: 344px;
+  height: 57px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}

@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
+import api from "../../services/api";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  // handles
+
+  function handleEmail(e) {
+    setEmail(e.target.value);
+  }
+  function handleSenha(e) {
+    setSenha(e.target.value);
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    try {
+      const response = await api.post("/auth/login", {
+        email: email,
+        senha: senha,
+      });
+
+      const token = response.data.token;
+
+      localStorage.setItem("authToken", token);
+
+      console.log("Login realizado com sucesso!", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        console.error("Erro no login:", error.response.data.message);
+      } else {
+        console.error("Erro de conexão:", error.message);
+      }
+    }
+  }
+
   return (
     <>
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -13,11 +49,12 @@ function Login() {
           <div className="input-group mb-3 px-5">
             <input
               id="usuario_input"
-              type="text"
+              type="email"
               className="form-control"
               placeholder="E-mail ou Usuário"
               aria-label="Username"
               aria-describedby="basic-addon1"
+              onChange={handleEmail}
             />
           </div>
           <div className="input-group mb-3 px-5">
@@ -28,6 +65,7 @@ function Login() {
               placeholder="Senha"
               aria-label="Username"
               aria-describedby="basic-addon1"
+              onChange={handleSenha}
             />
           </div>
 
@@ -53,7 +91,7 @@ function Login() {
               </Link>
             </p>
           </div>
-          <button id="entrar_btn" type="button" className="btn">
+          <button onClick={handleLogin} id="entrar_btn" type="button" className="btn">
             Entrar
           </button>
           <p id="cadastro_p" className="mt-5">

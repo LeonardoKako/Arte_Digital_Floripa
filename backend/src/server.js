@@ -1,5 +1,6 @@
-import express from 'express';
 import 'dotenv/config'
+import cors from 'cors';
+import express from 'express';
 import usuarioRoutes from './modules/usuario/usuarioRoutes.js';
 import autorRoutes from './modules/autor/autorRoutes.js';
 import obraRoutes from './modules/obra/obraRoutes.js';
@@ -8,6 +9,7 @@ import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 const app = express();
 const port = 3000;
+app.use(cors());
 app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

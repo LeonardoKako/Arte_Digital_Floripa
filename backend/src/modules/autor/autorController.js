@@ -78,16 +78,7 @@ async function atualizarAutor(req, res, next) {
 async function deletarAutor(req, res, next) {
     try {
         const id = req.params.id;
-
         await autorService.deletarAutor(id);
-
-        if (!autorAtualizado) {
-            return res.status(404).json({ 
-            sucesso: false, 
-            erro: "Autor não encontrado."
-        });
-        }
-
         return res.status(204).end();
     } catch (error) {
         return next(error);

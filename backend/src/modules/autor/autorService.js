@@ -49,7 +49,7 @@ async function atualizarAutor(id, dadosAutor) {
     const autorExiste = await listarAutorPorId(id);
 
     if (!autorExiste) {
-        throw new Error("Autor nao encontrado!")
+        throw new Error("Autor nao encontrado.")
     };
 
     const { nome, nacionalidade, data_nascimento } = dadosAutor;
@@ -76,7 +76,7 @@ async function deletarAutor(id) {
     const autorExiste = await listarAutorPorId(id);
 
     if (!autorExiste) {
-        throw new Error("Autor nao encontrado!")
+        throw new Error("Autor nao encontrado.")
     };
 
     const autorDeletado = await prisma.autor.delete({

@@ -2,7 +2,8 @@ import obraService from './obraService.js';
 
 async function listarObras(req, res, next) {
     try {
-        const obras = await obraService.listarObras();
+        const { categoria, autor } = req.query;
+        const obras = await obraService.listarObras({ categoria, autor });
         return res.status(200).json(obras);
     } catch (error) {
         next(error);

@@ -51,10 +51,14 @@ model acervo {
   data_criacao DateTime? @db.Date
   descricao    String?
   categoria    String?   @db.VarChar(100)
+  id_usuario   Int?
 
-  midia3d         midia3d[]
-  usuario_acervo  usuario_acervo[]
-  autor_acervo    autor_acervo[]
+  usuario       usuario       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  midia3d       midia3d[]
+  usuario_acervo usuario_acervo[]
+  autor_acervo   autor_acervo[]
+
+  @@map("acervo")
 }
 
 model midia3d {

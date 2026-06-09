@@ -6,6 +6,7 @@ import autorRoutes from './modules/autor/autorRoutes.js';
 import obraRoutes from './modules/obra/obraRoutes.js';
 import authRoutes from './modules/auth/authRoutes.js';
 import { swaggerUi, swaggerSpec } from './config/swagger.js';
+import { errorMiddleware } from './middleware/errorMiddleware.js';
 
 const app = express();
 const port = 3000;
@@ -17,5 +18,6 @@ app.use("/usuarios", usuarioRoutes);
 app.use("/autores", autorRoutes);
 app.use("/obras", obraRoutes);
 app.use("/auth", authRoutes);
+app.use(errorMiddleware);
 
 app.listen(port);

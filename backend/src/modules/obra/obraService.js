@@ -93,10 +93,22 @@ async function criarObra(dados) {
 
     if (dados.midias3d && dados.midias3d.length) {
         const midiasValidas = dados.midias3d.every(
-            m => m && m.nome_arquivo && m.arquivo !== undefined
+            m => m && m.nome_arquivo && m.arquivo !== undefined && m.arquivo !== null && m.arquivo !== ''
         );
         if (!midiasValidas) {
             const erro = new Error('Dados de mídia 3D inválidos. É necessário nome_arquivo e arquivo.');
+            erro.statusCode = 400;
+            throw erro;
+        }
+        const arquivosValidos = dados.midias3d.every(m => {
+            try {
+                return Buffer.from(m.arquivo).length >= 0;
+            } catch {
+                return false;
+            }
+        });
+        if (!arquivosValidos) {
+            const erro = new Error('Arquivo de mídia 3D inválido.');
             erro.statusCode = 400;
             throw erro;
         }

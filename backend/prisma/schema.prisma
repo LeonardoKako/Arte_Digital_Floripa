@@ -34,6 +34,7 @@ model usuario {
   cadastro cadastro @relation(fields: [id_cadastro], references: [id_cadastro], onDelete: Cascade)
 
   usuario_acervo usuario_acervo[]
+  acervo_responsavel acervo[] @relation("UsuarioResponsavel")
 }
 
 model autor {
@@ -53,7 +54,7 @@ model acervo {
   categoria    String?   @db.VarChar(100)
   id_usuario   Int?
 
-  usuario       usuario       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  usuario       usuario?      @relation("UsuarioResponsavel", fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   midia3d       midia3d[]
   usuario_acervo usuario_acervo[]
   autor_acervo   autor_acervo[]

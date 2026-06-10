@@ -23,11 +23,11 @@ async function listarAutorPorId(id) {
 }
 
 async function criarAutor(dadosAutor) {
-    const { nome, nacionalidade, data_nascimento } = dadosAutor;
+    const { nome_publico, nacionalidade, data_nascimento } = dadosAutor;
 
-    const nomeLimpo = nome ? nome.trim() : null;
-    const nacionalidadeLimpa = nacionalidade.trim();
-    const dataNascValida = new Date(data_nascimento);
+    const nomeLimpo = nome_publico ? nome_publico.trim() : null;
+    const nacionalidadeLimpa = nacionalidade ? nacionalidade.trim() : null;
+    const dataNascValida = data_nascimento ? new Date(data_nascimento) : null;
 
     if (!nomeLimpo) {
         throw new Error("É necessário cadastrar um nome!");

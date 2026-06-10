@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 const mapeamentoErrosNegocio = {
     "Id inválido": 400,
     "É necessário cadastrar um nome!": 400,
+    "Email não é válido": 400,
     "Autor nao encontrado.": 404,
     "Usuário não encontrado": 404,
     "Registro não encontrado.": 404,

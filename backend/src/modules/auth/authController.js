@@ -50,7 +50,7 @@ async function recuperarSenha(req, res, next) {
 
         return res.status(200).json({
             sucesso: true,
-            mensagem: 'Se este email estiver cadastrado, você receberá as instruções em breve.'
+            mensagem: "Se este email estiver cadastrado, você receberá as instruções em breve."
         });
     } catch(error) {
         return next(error);
@@ -88,10 +88,14 @@ async function redefinirSenha(req, res, next) {
 // }
 
 async function me(req, res, next) {
-    return res.status(200).json({
+    try {
+        return res.status(200).json({
         sucesso: true,
         usuario: req.usuario
-    });
+        });
+    } catch(error){
+        return next(error);
+    }   
 }
 
 export default {

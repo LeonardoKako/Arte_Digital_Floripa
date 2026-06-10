@@ -5,9 +5,8 @@ import usuarioService from "../modules/usuario/usuarioService.js";
 export const authMiddleware = async (req, res, next) => {
     const { authorization } = req.headers;
 
-    if(!authorization) {
-        throw new Error("Não autorizado!");
-    }
+    // Erro 401 não autorizado
+    if(!authorization) return next(new Error("Não autorizado!"));
 
     // É usado o padrão do Bearer token
     // Bearer token sempre retorna: "Bearer + token"
@@ -15,6 +14,8 @@ export const authMiddleware = async (req, res, next) => {
     // Bearer fica na posição 0 e o token na 1
     // Pega a posição 1 para ter o token
     const token = authorization.split(' ')[1];
+
+    if(!token) return next(new Error("Não autorizado!"));
 
     try {
         const { id_cadastro } = jwt.verify(token, process.env.JWT_PASSWORD);
@@ -26,7 +27,7 @@ export const authMiddleware = async (req, res, next) => {
         // está tudo certo, pode executar próxima função
         next();
     } catch(error) {
-        if(error.code === "USER_NOT_FOUND") {
+        if(error.message === "Usuário não encontrado") {
             return next(new Error("Não autorizado!"));
         }
         return next(error);

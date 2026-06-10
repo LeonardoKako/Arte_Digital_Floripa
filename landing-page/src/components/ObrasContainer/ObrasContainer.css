@@ -14,7 +14,7 @@
     padding: 10px 45px ;
 }
 
-#botao_tipo button{
+.filtro_botao {
     width: 130px;
     height: 40px;
     border-radius: 40px;

@@ -117,10 +117,9 @@ async function criarObra(dados) {
     const obra = await prisma.acervo.create({
         data: {
             titulo: dados.titulo.trim(),
-            dataCriacao: dados.data ? new Date(dados.data) : null,
+            data_criacao: dados.data ? new Date(dados.data) : null,
             descricao: dados.descricao || null,
             categoria: dados.categoria || null,
-            id_usuario: dados.idUsuario ? parseInt(dados.idUsuario) : null,
             midia3d: dados.midias3d && dados.midias3d.length
                 ? { create: dados.midias3d.map(m => ({ nome_arquivo: m.nome_arquivo, arquivo: Buffer.from(m.arquivo) })) }
                 : undefined,
@@ -206,7 +205,7 @@ async function atualizarObra(id, dados) {
         }
     }
 
-    const { midias3d, usuariosIds, autoresIds, ...acervoData } = dados;
+    const { midias3d, usuariosIds, autoresIds, data, idUsuario, ...acervoData } = dados;
 
     await prisma.$transaction(async (tx) => {
         if (midias3d && midias3d.length) {
@@ -237,8 +236,7 @@ async function atualizarObra(id, dados) {
             data: {
                 ...acervoData,
                 titulo: acervoData.titulo ? acervoData.titulo.trim() : undefined,
-                dataCriacao: acervoData.data ? new Date(acervoData.data) : undefined,
-                id_usuario: acervoData.idUsuario ? parseInt(acervoData.idUsuario) : undefined
+                data_criacao: acervoData.data ? new Date(acervoData.data) : undefined
             }
         });
     });

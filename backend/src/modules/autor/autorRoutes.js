@@ -1,5 +1,6 @@
 import express, { Router } from 'express'
 import autorController from './autorController.js';
+import { authMiddleware } from '../../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -116,7 +117,7 @@ router.get("/listar/:id", autorController.listarAutorPorId);
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.post("/criar", autorController.criarAutor);
+router.post("/criar", authMiddleware, autorController.criarAutor);
 
 /**
  * @swagger
@@ -171,7 +172,7 @@ router.post("/criar", autorController.criarAutor);
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.put("/atualizar/:id", autorController.atualizarAutor);
+router.put("/atualizar/:id", authMiddleware, autorController.atualizarAutor);
 
 /**
  * @swagger
@@ -196,6 +197,6 @@ router.put("/atualizar/:id", autorController.atualizarAutor);
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.delete("/deletar/:id", autorController.deletarAutor);
+router.delete("/deletar/:id", authMiddleware, autorController.deletarAutor);
 
 export default router;

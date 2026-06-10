@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -34,7 +28,6 @@ model usuario {
   cadastro cadastro @relation(fields: [id_cadastro], references: [id_cadastro], onDelete: Cascade)
 
   usuario_acervo usuario_acervo[]
-  acervo_responsavel acervo[] @relation("UsuarioResponsavel")
 }
 
 model autor {
@@ -52,9 +45,7 @@ model acervo {
   data_criacao DateTime? @db.Date
   descricao    String?
   categoria    String?   @db.VarChar(100)
-  id_usuario   Int?
 
-  usuario       usuario?      @relation("UsuarioResponsavel", fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   midia3d       midia3d[]
   usuario_acervo usuario_acervo[]
   autor_acervo   autor_acervo[]
@@ -92,4 +83,3 @@ model autor_acervo {
 
   @@id([id_autor, id_obra])
 }
-

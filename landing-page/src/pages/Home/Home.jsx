@@ -7,7 +7,6 @@ import { useLocation } from "react-router-dom";
 // Componentes
 import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
-import SearchObras from "../../components/SearchObras/SearchObras";
 import ObrasContainer from "../../components/ObrasContainer/ObrasContainer";
 
 function Home() {
@@ -46,8 +45,6 @@ function Home() {
       />
       {/* hero */}
       <Hero />
-      {/* Header 2 - procurar obras */}
-      <SearchObras />
       {/* Obras */}
       <ObrasContainer />
       {/* Footer */}

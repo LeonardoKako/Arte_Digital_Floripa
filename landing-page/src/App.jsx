@@ -20,10 +20,9 @@ function App() {
           <Route path="/obras/:id" element={<Obras />} />
         </Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/completar-cadastro" element={<Cadastro />} />
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
         <Route path="/novaObra" element={<NovaObra />} />
-        
       </Routes>
     </BrowserRouter>
   );

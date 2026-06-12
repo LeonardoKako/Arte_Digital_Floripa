@@ -1,5 +1,5 @@
-import React,{ useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import api from "../../services/api";
 import "./Cadastro.css";
@@ -7,25 +7,25 @@ import "./Cadastro.css";
 function Cadastro() {
   // setando estados para os campos
 
+  const [searchParams] = useSearchParams();
   const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [novoUsuario, setNovoUsuario] = useState({
     nome: "",
-    email: "",
     senha: "",
   });
+
+  const tempToken = searchParams.get("token");
+  console.log(tempToken)
+
+  const navigate = useNavigate();
 
   // Funções handle
 
   function handleNome(e) {
     setNome(e.target.value);
     console.log(nome);
-  }
-  function handleEmail(e) {
-    setEmail(e.target.value);
-    console.log(email);
   }
   function handleSenha(e) {
     setSenha(e.target.value);
@@ -35,16 +35,27 @@ function Cadastro() {
     setConfirmarSenha(e.target.value);
     console.log(confirmarSenha);
   }
-  function handleEnviar(e) {
+
+  // enviar
+
+  async function handleEnviar(e) {
     e.preventDefault();
-    if (senha == confirmarSenha) {
-      setNovoUsuario({
-        nome: nome,
-        email: email,
-        senha: senha,
+
+    if (!nome || !senha) {
+      toast.error("Por favor preencha todos os campos.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
-      console.log(novoUsuario);
-    } else {
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
       toast.error("As senhas não são iguais.", {
         position: "top-center",
         autoClose: 5000,
@@ -55,15 +66,31 @@ function Cadastro() {
         progress: undefined,
         theme: "light",
       });
+      return;
     }
-  }
 
-  // axios
-
-  async function novoCadastro() {
     try {
-      const response = await axios.post("", novoUsuario);
-    } catch (error) {}
+      const response = await api.post(`/auth/completar-cadastro/${tempToken}`, {
+        nome: nome,
+        senha: senha,
+      });
+      console.log("Cadastro completado com sucesso:", response.data);
+      toast.success("Cadastro concluído com sucesso!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      navigate('/')
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -81,7 +108,7 @@ function Cadastro() {
           pauseOnHover
           theme="light"
         />
-        <h1 id="titulo">Criar Conta</h1>
+        <h1 id="titulo">Completar Cadastro</h1>
         <p id="sub_titulo" className="">
           Preencha os dados abaixo
         </p>
@@ -91,18 +118,8 @@ function Cadastro() {
               type="text"
               className="form-control"
               id="nome"
-              placeholder="Nome Completo"
-              aria-describedby="emailHelp"
+              placeholder="Nome"
               onChange={handleNome}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              placeholder="Email"
-              onChange={handleEmail}
             />
           </div>
           <div className="mb-3">

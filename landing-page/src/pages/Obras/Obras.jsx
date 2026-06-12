@@ -1,53 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import "./Obras.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-// Componentes
-
-import Navbar from "../../components/Navbar/Navbar";
+import api from "../../services/api";
 
 function Obras() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [obra, setObra] = useState({
+    titulo: "",
+    arquivo: null,
+    categoria: "",
+    tecnica: "mock",
+    autor: "",
+    ano: "",
+    descricao: "",
+  });
 
-  const obras = [
-    {
-      id: 0,
-      foto: "/img/obra1.png",
-      titulo: "This outstanding object",
-      autor: "Franklin Cascaes",
-      ano: 1965,
-      categoria: "desenho",
-      tecnica: "Nanquim sobre papel",
-      descricao:
-        "Call out a feature, benefit, or value of your site or product that can stand on its own.",
-    },
-    {
-      id: 1,
-      foto: "/img/obra2.png",
-      titulo: "This outstanding article",
-      autor: "Franklin Cascaes",
-      ano: 1965,
-      categoria: "desenho",
-      tecnica: "Nanquim sobre papel",
-      descricao:
-        "Cards are a great way to organize content in a collection—products, case studies, services, and more.",
-    },
-    {
-      id: 2,
-      foto: "/img/obra3.png",
-      titulo: "This brilliant bit",
-      autor: "Franklin Cascaes",
-      ano: 1965,
-      categoria: "desenho",
-      tecnica: "Nanquim sobre papel",
-      descricao:
-        "Add more cards to this little stack to build out a grid of whatever size and shape you need.",
-    },
-  ];
+  useEffect(() => {
+    async function fetchObra() {
+      try {
+        setCarregando(true);
+        const response = await api.get(`/obras/listar/${id}`);
 
-  var obra = obras[Number(id)];
+        setObra({
+          titulo: response.data.obra.titulo,
+          arquivo: response.data.obra.midia3d?.[0]?.nome_arquivo || "",
+          categoria: response.data.obra.categoria,
+          tecnica: "mock",
+          autor: response.data.obra.autor_acervo?.[0]?.autor.nome_publico || "",
+          ano: response.data.obra.data_criacao,
+          descricao: response.data.obra.descricao,
+        });
+      } catch (error) {
+        toast.error("Erro ao buscar a obra", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }
+    fetchObra();
+  }, [id]);
 
   if (!obra) {
     return <h1>Obra não encontrada</h1>;
@@ -55,32 +57,42 @@ function Obras() {
 
   return (
     <>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div id="main-container" className=" d-flex flex-column">
         <div className="container-fluid d-flex justify-content-start">
           <button className="btn" onClick={() => navigate(-1)}>
             <img src="/img/voltar.png" id="voltar" />
           </button>
         </div>
-        <img
-          src={obras[Number(id)].foto}
-          alt={obras[Number(id)].titulo}
-          id="imagem"
-        />
+        {obra.arquivo && (
+          <img src={obra.arquivo} alt={obra.titulo} id="imagem" />
+        )}
         <div id="info_container" className="px-5">
           <div
             id="categorias"
             className="container-fluid d-flex flex-row gap-2"
           >
             <button type="button" className="btn">
-              {obras[Number(id)].categoria}
+              {obra.categoria}
             </button>
           </div>
           <div
             id="autor_container"
             className="container-fluid d-flex flex-column"
           >
-            <p id="titulo">{obras[Number(id)].titulo}</p>
-            <p id="autor">{obras[Number(id)].autor}</p>
+            <p id="titulo">{obra.titulo}</p>
+            <p id="autor">{obra.autor}</p>
           </div>
           <div
             id="info_tecnica"
@@ -88,16 +100,16 @@ function Obras() {
           >
             <div id="ano" className="col-5 py-3 px-5">
               <div className="row">Ano</div>
-              <div className="row">{obras[Number(id)].ano}</div>
+              <div className="row">{obra.ano}</div>
             </div>
             <div id="tecnica" className="col-5 py-3 px-5">
               <div className="row">Técnica</div>
-              <div className="row">{obras[Number(id)].tecnica}</div>
+              <div className="row">{obra.tecnica}</div>
             </div>
           </div>
           <div id="descricao_container">
             <h5 className="fw-bold">Descrição</h5>
-            <p id="descricao">{obras[id].descricao}</p>
+            <p id="descricao">{obra.descricao}</p>
           </div>
         </div>
       </div>

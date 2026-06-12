@@ -22,6 +22,11 @@ const router = Router();
  *         schema:
  *           type: string
  *         description: Filtrar por nome público do autor
+ *       - in: query
+ *         name: titulo
+ *         schema:
+ *           type: string
+ *         description: Filtrar por título da obra (busca parcial, case-insensitive)
  *     responses:
  *       200:
  *         description: Lista de obras

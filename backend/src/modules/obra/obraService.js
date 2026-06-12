@@ -10,7 +10,7 @@ function parseId(valor, nomeCampo) {
     return id;
 }
 
-async function listarObras({ categoria, autor } = {}) {
+async function listarObras({ categoria, autor, titulo } = {}) {
     const where = {};
     if (categoria) {
         where.categoria = categoria;
@@ -23,6 +23,9 @@ async function listarObras({ categoria, autor } = {}) {
             return [];
         }
         where.autor_acervo = { some: { id_autor: autorData.id_autor } };
+    }
+    if (titulo) {
+        where.titulo = { contains: titulo, mode: 'insensitive' };
     }
     return await prisma.acervo.findMany({
         where,

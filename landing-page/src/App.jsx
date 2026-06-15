@@ -1,30 +1,55 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
+import { ToastContainer } from "react-toastify";
 
-// paginas 
+// Paginas
 
 import Home from "./pages/Home/Home";
 import Obras from "./pages/Obras/Obras";
-import Login from "./pages/Login/Login"
+import Login from "./pages/Login/Login";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import EsqueciSenha from "./pages/EsqueciSenha/EsqueciSenha";
 import NovaObra from "./pages/NovaObra/NovaObra";
 
+// proteção de rotas
+
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/obras/:id" element={<Obras />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/completar-cadastro" element={<Cadastro />} />
-        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
-        <Route path="/novaObra" element={<NovaObra />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          {/* Rotas publicas */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="/obras/:id" element={<Obras />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/completar-cadastro" element={<Cadastro />} />
+          <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+
+          {/* rotas privadas - somente com o token jwt */}
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/nova-obra" element={<NovaObra />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
   );
 }
 

@@ -1,13 +1,11 @@
 import React, {useEffect} from "react";
-import "../../App.css"; // Se App.css ainda existir e for necessário
-import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 // Componentes
-import Navbar from "../../components/Navbar/Navbar";
-import Hero from "../../components/Hero/Hero";
-import ObrasContainer from "../../components/ObrasContainer/ObrasContainer";
+
+import Hero from "./components/Hero/Hero";
+import ObrasContainer from "./components/ObrasContainer/ObrasContainer";
 
 function Home() {
   const location = useLocation();
@@ -31,18 +29,6 @@ function Home() {
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       {/* hero */}
       <Hero />
       {/* Obras */}

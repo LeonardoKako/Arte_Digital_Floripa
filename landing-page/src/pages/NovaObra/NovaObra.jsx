@@ -1,51 +1,100 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./NovaObra.css";
 import Footer from "../../components/Footer/Footer";
-import LinhaObra from "../../components/LinhaObra/LinhaObra";
+import LinhaObra from "./components/LinhaObra/LinhaObra.jsx";
+import api from "../../services/api.js";
+
+// {
+//   id: 0,
+//   nome: "bruxas da ilha",
+//   foto: "./img/obra1.png",
+//   autor: "Franklin Cascaes",
+//   ano: 1950,
+//   categoria: "Desenho",
+// }]
 
 function NovaObra() {
-  var obras = [
-    {
-      id: 0,
-      nome: "bruxas da ilha",
-      foto: "./img/obra1.png",
-      autor: "Franklin Cascaes",
-      ano: 1950,
-      categoria: "Desenho",
-    },
-    {
-      id: 1,
-      nome: "O boitatá",
-      foto: "./img/obra2.png",
-      autor: "Franklin Cascaes",
-      ano: 1971,
-      categoria: "Escultura",
-    },
-    {
-      id: 2,
-      nome: "Sabás bruxólicos",
-      foto: "./img/obra3.png",
-      autor: "Franklin Cascaes",
-      ano: 1976,
-      categoria: "Escultura",
-    },
-    {
-      id: 3,
-      nome: "A Zorra Vasia",
-      foto: "./img/obra3.png",
-      autor: "Franklin Cascaes",
-      ano: 1970,
-      categoria: "desenho",
-    },
-    {
-      id: 4,
-      nome: "Rendeiras",
-      foto: "./img/obra3.png",
-      autor: "Franklin Cascaes",
-      ano: 1965,
-      categoria: "Pintura",
-    },
-  ];
+  // states
+
+  const [obras, setObras] = useState([]);
+  const [filtros, setFiltros] = useState({
+    titulo: "",
+    categoria: "",
+    ano: "",
+  });
+
+  // handlers
+
+  function handleTitulo(e) {
+    setFiltros((filtroAnterior) => ({
+      ...filtroAnterior,
+      titulo: e.target.value,
+    }));
+  }
+
+  function handleCategoria(e) {
+    if (e.target.value === "todos") {
+      setFiltros((filtroAnterior) => ({
+        ...filtroAnterior,
+        categoria: ""
+      }));
+    } else {
+      setFiltros((filtroAnterior) => ({
+        ...filtroAnterior,
+        categoria: e.target.value,
+      }));
+    }
+  }
+
+  function handleAno(e) {
+    setFiltros((filtroAnterior) => ({
+      ...filtroAnterior,
+      ano: e.target.value,
+    }));
+  }
+
+  function handleLimpar(e) {
+    e.preventDefault();
+    setFiltros({
+      titulo: "",
+      categoria: "",
+      ano: "",
+    });
+  }
+
+  // request
+
+  useEffect(() => {
+    async function fetchObras() {
+      try {
+        const parametros = {};
+
+        // verificando e montando os parametros da request
+
+        if (filtros.titulo) parametros.titulo = filtros.titulo;
+        if (filtros.categoria) parametros.categoria = filtros.categoria;
+        if (filtros.ano) parametros.ano = filtros.ano;
+
+        const response = await api.get(`/obras/listar`, {
+          params: parametros,
+        });
+
+        setObras(response.data || []);
+      } catch (error) {
+        toast.error("Erro ao buscar obras.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }
+    fetchObras();
+  }, [filtros]);
 
   return (
     <>
@@ -91,17 +140,25 @@ function NovaObra() {
                   className="form-control"
                   type="search"
                   placeholder="Buscar obra..."
+                  onChange={handleTitulo}
+                  value={filtros.titulo}
                 />
               </form>
             </div>
 
             {/* Input - categoria */}
             <div>
-              <select className="form-select" id="categoria_select">
-                <option defaultValue>Categoria</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select
+                onChange={handleCategoria}
+                value={filtros.categoria}
+                className="form-select"
+                id="categoria_select"
+              >
+                <option value="todos">Categoria</option>
+                <option value="pintura">Pintura</option>
+                <option value="escultura">Escultura</option>
+                <option value="gravura">Gravura</option>
+                <option value="desenho">Desenho</option>
               </select>
             </div>
 
@@ -118,6 +175,7 @@ function NovaObra() {
             {/* botão - limpar filtros */}
             <button
               id="limpar_filtros"
+              onClick={handleLimpar}
               type="button"
               className="btn d-flex justify-content-center align-items-center"
             >
@@ -177,13 +235,13 @@ function NovaObra() {
               <tbody className="table-group-divider">
                 {obras.map((obra) => (
                   <LinhaObra
-                    id={obra.id}
-                    imagem={obra.foto}
-                    nome={obra.nome}
-                    artista={obra.autor}
-                    ano={obra.ano}
+                    id={obra.id_obra}
+                    imagem={obra.midia3d?.[0]?.nome_arquivo}
+                    nome={obra.titulo}
+                    artista={obra.autor_acervo?.[0]?.autor.nome_publico}
+                    ano={obra.data_criacao}
                     categoria={obra.categoria}
-                    key={obra.id}
+                    key={obra.id_obra}
                   />
                 ))}
               </tbody>

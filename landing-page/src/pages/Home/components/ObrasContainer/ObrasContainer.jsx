@@ -1,80 +1,65 @@
 import React, { useState, useEffect } from "react";
 import "./ObrasContainer.css";
-import api from "../../services/api";
-import { toast, ToastContainer } from "react-toastify";
+import api from "../../../../services/api";
+import { toast } from "react-toastify";
 
 // componentes
 
-import Card from "../Card/Card";
+import Card from "../../../../components/Card/Card.jsx";
 
 function ObrasContainer() {
+  // definir estados
   const [obras, setObras] = useState([]);
-  const [obrasProcuradas, setObrasProcuradas] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState(null);
-  const [filtro, setFiltro] = useState('todos');
-  const [obraProcurar, setObraProcurar] = useState("");
-  const [procurar, setProcurar] = useState(false);
+  const [tituloInput, setTituloInput] = useState("");
+  const [filtro, setFiltro] = useState({
+    categoria: "todos",
+    titulo: "",
+  });
 
-  function handleFiltroChange(e) {
-    setFiltro(e.target.value);
+  // handlers
+
+  function handleCategoria(e) {
+    setFiltro((filtroAnterior) => ({
+      ...filtroAnterior,
+      categoria: e.target.value,
+    }));
   }
 
   function handleProcurar(e) {
     e.preventDefault();
-    setProcurar(true);
+    setFiltro((filtroAnterior) => ({
+      ...filtroAnterior,
+      titulo: tituloInput,
+    }));
   }
 
   function handleProcInput(e) {
-    setObraProcurar(e.target.value);
+    setTituloInput(e.target.value);
   }
 
-  useEffect(() => {
-    async function buscarObras() {
-      try {
-        const response = await api.get(
-          `/obras/listar?titulo=${obraProcurar}`,
-        );
-
-        setObrasProcuradas(response.data);
-        setObraProcurar('')
-      } catch (error) {
-        toast.error("Erro ao procurar por obras.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    }
-    buscarObras()
-  }, [procurar]);
+  // effects e requests
 
   useEffect(() => {
     async function fetchObras() {
       try {
         setCarregando(true);
-        setErro(null);
 
-        let parametros;
+        const parametros = {};
 
-        if (filtro === "todos") {
-          parametros = {};
-        } else {
-          parametros = { categoria: filtro };
+        // verificando e montando os parametros da request
+
+        if (filtro.titulo) parametros.titulo = filtro.titulo;
+        if (filtro.categoria && filtro.categoria !== "todos") {
+          parametros.categoria = filtro.categoria;
         }
 
+        
         const response = await api.get(`/obras/listar`, {
           params: parametros,
         });
 
-        setObras(response.data);
-
-        console.log(obras);
+        setObras(response.data || []);
       } catch (error) {
         toast.error("Erro ao buscar obras.", {
           position: "top-center",
@@ -95,19 +80,6 @@ function ObrasContainer() {
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-
       <div className="container-fluid" id="search_container">
         <form className="d-flex my-auto" role="search">
           <button
@@ -134,6 +106,7 @@ function ObrasContainer() {
             placeholder="Buscar obras..."
             aria-label="Search"
             onChange={handleProcInput}
+            value={tituloInput}
           />
         </form>
       </div>
@@ -146,8 +119,8 @@ function ObrasContainer() {
               name="filtroObra"
               id="radioTodos"
               value="todos"
-              checked={filtro === "todos"}
-              onChange={handleFiltroChange}
+              checked={filtro.categoria === "todos"}
+              onChange={handleCategoria}
             />
             <label
               className="btn btn-outline-dark filtro_botao"
@@ -161,8 +134,8 @@ function ObrasContainer() {
               name="filtroObra"
               id="radioPintura"
               value="pintura"
-              checked={filtro === "pintura"}
-              onChange={handleFiltroChange}
+              checked={filtro.categoria === "pintura"}
+              onChange={handleCategoria}
             />
             <label
               className="btn btn-outline-dark filtro_botao"
@@ -176,8 +149,8 @@ function ObrasContainer() {
               name="filtroObra"
               id="radioEscultura"
               value="escultura"
-              checked={filtro === "escultura"}
-              onChange={handleFiltroChange}
+              checked={filtro.categoria === "escultura"}
+              onChange={handleCategoria}
             />
             <label
               className="btn btn-outline-dark filtro_botao"
@@ -191,8 +164,8 @@ function ObrasContainer() {
               name="filtroObra"
               id="radioGravura"
               value="gravura"
-              checked={filtro === "gravura"}
-              onChange={handleFiltroChange}
+              checked={filtro.categoria === "gravura"}
+              onChange={handleCategoria}
             />
             <label
               className="btn btn-outline-dark filtro_botao"
@@ -206,8 +179,8 @@ function ObrasContainer() {
               name="filtroObra"
               id="radioDesenho"
               value="desenho"
-              checked={filtro === "desenho"}
-              onChange={handleFiltroChange}
+              checked={filtro.categoria === "desenho"}
+              onChange={handleCategoria}
             />
             <label
               className="btn btn-outline-dark filtro_botao"
@@ -221,25 +194,21 @@ function ObrasContainer() {
             id="obras_cards"
             className="d-flex flex-wrap p-4 gap-4 justify-content-center"
           >
-            {obrasProcuradas && obrasProcuradas.length > 0
-              ? obrasProcuradas.map((obra) => (
-                  <Card
-                    id={obra.id_obra}
-                    foto={obra.midia3d[0].nome_arquivo}
-                    titulo={obra.titulo}
-                    descricao={obra.descricao}
-                    key={obra.id_obra}
-                  />
-                ))
-              : obras.map((obra) => (
-                  <Card
-                    id={obra.id_obra}
-                    foto={obra.midia3d[0].nome_arquivo}
-                    titulo={obra.titulo}
-                    descricao={obra.descricao}
-                    key={obra.id_obra}
-                  />
-                ))}
+            {carregando ? (
+              <p>Carregando obras...</p>
+            ) : obras.length > 0 ? (
+              obras.map((obra) => (
+                <Card
+                  id={obra.id_obra}
+                  foto={obra.midia3d?.[0]?.nome_arquivo}
+                  titulo={obra.titulo}
+                  descricao={obra.descricao}
+                  key={obra.id_obra}
+                />
+              ))
+            ) : (
+              <p>Nenhuma obra encontrada.</p>
+            )}
           </div>
         </div>
       </div>

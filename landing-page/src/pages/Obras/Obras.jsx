@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "./Obras.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import api from "../../services/api";
 
 function Obras() {
@@ -51,24 +50,19 @@ function Obras() {
     fetchObra();
   }, [id]);
 
+  // formatação da data
+
+  let anoSplit = obra.ano.split("T");
+  let data = anoSplit[0];
+  let anoSolto = data.split("-");
+  let anoFinal = anoSolto[2] + "/" + anoSolto[1] + "/" + anoSolto[0];
+
   if (!obra) {
     return <h1>Obra não encontrada</h1>;
   }
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <div id="main-container" className=" d-flex flex-column">
         <div className="container-fluid d-flex justify-content-start">
           <button className="btn" onClick={() => navigate(-1)}>
@@ -100,7 +94,7 @@ function Obras() {
           >
             <div id="ano" className="col-5 py-3 px-5">
               <div className="row">Ano</div>
-              <div className="row">{obra.ano}</div>
+              <div className="row">{anoFinal}</div>
             </div>
             <div id="tecnica" className="col-5 py-3 px-5">
               <div className="row">Técnica</div>

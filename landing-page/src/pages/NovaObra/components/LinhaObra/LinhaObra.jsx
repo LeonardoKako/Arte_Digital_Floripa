@@ -1,14 +1,20 @@
 import React from "react";
 import "./LinhaObra.css";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 function LinhaObra({id,imagem, nome, artista, ano, categoria}) {
+
+  let anoSplit = ano.split("T");
+  let data = anoSplit[0];
+  let anoSolto = data.split("-");
+  let anoFinal = anoSolto[2] + "/" + anoSolto[1] + "/" + anoSolto[0] ;
+
   return (
     <tr>
       <td><img id="linha_thumb" src={imagem} alt={nome} /></td>
       <td id="linha_nome">{nome}</td>
       <td id="linha_artista">{artista}</td>
-      <td id="linha_ano">{ano}</td>
+      <td id="linha_ano">{anoFinal}</td>
       <td id="linha_categoria">{categoria}</td>
       <td className="align-middle">
         <div id="acoes_container" className="d-flex justify-content-center ">

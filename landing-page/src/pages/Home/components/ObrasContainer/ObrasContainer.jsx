@@ -44,7 +44,6 @@ function ObrasContainer() {
     async function fetchObras() {
       try {
         setCarregando(true);
-
         const parametros = {};
 
         // verificando e montando os parametros da request
@@ -54,7 +53,6 @@ function ObrasContainer() {
           parametros.categoria = filtro.categoria;
         }
 
-        
         const response = await api.get(`/obras/listar`, {
           params: parametros,
         });
@@ -80,10 +78,9 @@ function ObrasContainer() {
 
   return (
     <>
-      <div className="container-fluid" id="search_container">
-        <form className="d-flex my-auto" role="search">
+      <div className="container-fluid d-flex justify-content-center align-items-center" id="search_container">
+        <form className="d-flex justify-content-center align-items-center" role="search" onSubmit={handleProcurar}>
           <button
-            onClick={handleProcurar}
             id="botao_procurar"
             className="btn"
             type="submit"

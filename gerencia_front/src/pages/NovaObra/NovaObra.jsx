@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useEffectEvent, useState, useRef } from "react";
 import "./NovaObra.css";
-import Footer from "../../components/Footer/Footer";
 import LinhaObra from "./components/LinhaObra/LinhaObra.jsx";
 import api from "../../services/api.js";
-
-// {
-//   id: 0,
-//   nome: "bruxas da ilha",
-//   foto: "./img/obra1.png",
-//   autor: "Franklin Cascaes",
-//   ano: 1950,
-//   categoria: "Desenho",
-// }]
+import { toast } from "react-toastify";
 
 function NovaObra() {
   // states
-
+  const [me, setMe] = useState(null);
   const [obras, setObras] = useState([]);
+
   const [filtros, setFiltros] = useState({
     titulo: "",
     categoria: "",
     ano: "",
   });
 
-  // handlers
+  const [novaObra, setNovaObra] = useState({
+    titulo: "",
+    categoria: "",
+    ano: "",
+    descricao: "",
+    nomeArquivo: "",
+    arquivoBytes: [],
+  });
+
+  // referencias
+
+  const inputImagemRef = useRef(null);
+
+  // handlers para procurar obras
 
   function handleTitulo(e) {
     setFiltros((filtroAnterior) => ({
@@ -36,7 +41,7 @@ function NovaObra() {
     if (e.target.value === "todos") {
       setFiltros((filtroAnterior) => ({
         ...filtroAnterior,
-        categoria: ""
+        categoria: "",
       }));
     } else {
       setFiltros((filtroAnterior) => ({
@@ -62,7 +67,148 @@ function NovaObra() {
     });
   }
 
-  // request
+  // handlers cadastrar obras
+
+  function handleTituloCadastro(e) {
+    setNovaObra((anterior) => ({
+      ...anterior,
+      titulo: e.target.value,
+    }));
+  }
+
+  function handleCategoriaCadastro(e) {
+    setNovaObra((anterior) => ({
+      ...anterior,
+      categoria: e.target.value,
+    }));
+  }
+
+  function handleAnoCadastro(e) {
+    setNovaObra((anterior) => ({
+      ...anterior,
+      ano: e.target.value,
+    }));
+  }
+
+  function handleDescricaoCadastro(e) {
+    setNovaObra((anterior) => ({
+      ...anterior,
+      descricao: e.target.value,
+    }));
+  }
+
+  function handleArquivo(e) {
+    const arquivoSelecionado = e.target.files[0];
+
+    if (arquivoSelecionado) {
+      const leitor = new FileReader();
+
+      leitor.onload = (evento) => {
+        const bufferDeImagem = evento.target.result;
+        const bytesUint8 = new Uint8Array(bufferDeImagem);
+        const arrayDeBytes = Array.from(bytesUint8);
+
+        setNovaObra((anterior) => ({
+          ...anterior,
+          nomeArquivo: arquivoSelecionado.name,
+          arquivoBytes: arrayDeBytes,
+        }));
+      };
+      leitor.readAsArrayBuffer(arquivoSelecionado);
+    }
+  }
+
+  // handler de salvar uma obra
+
+  async function handleSalvarObra(e) {
+    e.preventDefault();
+
+    if (!me?.id_cadastro) {
+      toast.error("Usuario logado não identificado.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    try {
+      const payload = {
+        titulo: novaObra.titulo,
+        data: novaObra.ano ? `${novaObra.ano}-01-01` : "2026-06-07",
+        descricao: novaObra.descricao,
+        categoria: novaObra.categoria,
+        midias3d: [
+          {
+            nome_arquivo: novaObra.nomeArquivo || "./img/1.png",
+            arquivo:
+              novaObra.arquivoBytes.length > 0 ? novaObra.arquivoBytes : [0],
+          },
+        ],
+        usuariosIds: [me.id_cadastro],
+        autoresIds: [1],
+      };
+
+      const response = await api.post("/obras/cadastrar", payload);
+
+      toast.success("Obra cadastrada com sucesso!");
+
+      console.log(response.data);
+
+      setNovaObra({
+        titulo: "",
+        categoria: "",
+        ano: "",
+        descricao: "",
+        nomeArquivo: "",
+      });
+
+      if (inputImagemRef.current) inputImagemRef.current.value = "";
+
+      setFiltros((ant) => ({ ...ant }));
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error.response?.data);
+      toast.error("Erro ao salvar a nova obra.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }
+
+  // resgatar dados do usuario llogado
+
+  useEffect(() => {
+    async function fetchMe() {
+      try {
+        const response = await api.get("/auth/me");
+        setMe(response.data.usuario);
+      } catch (error) {
+        toast.error("Erro ao buscar informaçoes do usuario logado.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }
+  }, []);
+
+  // resgatar obras
 
   useEffect(() => {
     async function fetchObras() {
@@ -98,34 +244,6 @@ function NovaObra() {
 
   return (
     <>
-      <div className="container-fluid">
-        <nav id="nav_container" className="navbar navbar-expand-lg">
-          <div className="container-fluid">
-            <a className="navbar-brand" href="/">
-              <div className="d-flex ms-5 align-items-center">
-                <img
-                  src="/img/logo.png"
-                  alt="Logo da fundação cultural de Florianopolis Franklin Cascaes"
-                  className="logo m-2"
-                />
-                <h1 className="titulo">Acervo Franklin Cascaes</h1>
-              </div>
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-          </div>
-        </nav>
-      </div>
-
       <main>
         <div id="container_obras_no" className="container mt-4">
           <div
@@ -134,7 +252,7 @@ function NovaObra() {
           >
             {/* input - procurar */}
             <div>
-              <form>
+              <form onSubmit={(e) => e.preventDefault()}>
                 <input
                   id="procurar_obra"
                   className="form-control"
@@ -164,11 +282,16 @@ function NovaObra() {
 
             {/* input - ano */}
             <div>
-              <select className="form-select" id="ano_select">
+              <select
+                className="form-select"
+                id="ano_select"
+                value={filtros.ano}
+                onChange={handleAno}
+              >
                 <option defaultValue>Ano</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option value="1950">1950</option>
+                <option value="1997">1997</option>
+                <option value="2026">2026</option>
               </select>
             </div>
 
@@ -236,11 +359,12 @@ function NovaObra() {
                 {obras.map((obra) => (
                   <LinhaObra
                     id={obra.id_obra}
-                    imagem={obra.midia3d?.[0]?.nome_arquivo}
                     nome={obra.titulo}
                     artista={obra.autor_acervo?.[0]?.autor.nome_publico}
                     ano={obra.data_criacao}
                     categoria={obra.categoria}
+                    nomeArquivo={obra.midias3d?.[0]?.nome_arquivo}
+                    arquivoBytes={obra.midias3d?.[0]?.arquivo}
                     key={obra.id_obra}
                   />
                 ))}
@@ -249,8 +373,6 @@ function NovaObra() {
           </div>
         </div>
       </main>
-
-      <Footer />
 
       {/* <!-- offcanvas menu --> */}
       <div
@@ -282,27 +404,15 @@ function NovaObra() {
             >
               Imagem da Obra
             </label>
-            <button
-              id="btn_modal_no"
-              type="button"
-              className="btn"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  opacity="0.3"
-                  d="M7.59952 19.6591V-4.29153e-06H12.0597V19.6591H7.59952ZM8.87513e-05 12.0597V7.59943H19.6592V12.0597H8.87513e-05Z"
-                  fill="black"
-                />
-              </svg>
-            </button>
+            <div className="input-group mb-3">
+              <input
+                type="file"
+                id="img_no"
+                className="form-control"
+                onChange={handleArquivo}
+                ref={inputImagemRef}
+              />
+            </div>
           </div>
 
           {/* input - nome */}
@@ -317,6 +427,8 @@ function NovaObra() {
                 id="nome_no"
                 placeholder="Ex: Noite Estrelada"
                 aria-describedby="basic-addon3 basic-addon4"
+                onChange={handleTituloCadastro}
+                value={novaObra.titulo}
               />
             </div>
           </div>
@@ -327,11 +439,17 @@ function NovaObra() {
               Categoria
             </label>
             <div className="input-group">
-              <select className="form-select" id="categoria_no">
-                <option defaultValue>Selecione a categoria</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select
+                onChange={handleCategoriaCadastro}
+                value={novaObra.categoria}
+                className="form-select"
+                id="categoria_no"
+              >
+                <option value="">Selecione a categoria</option>
+                <option value="pintura">Pintura</option>
+                <option value="escultura">Escultura</option>
+                <option value="gravura">Gravura</option>
+                <option value="desenho">Desenho</option>
               </select>
             </div>
           </div>
@@ -348,6 +466,8 @@ function NovaObra() {
                 id="ano_no"
                 placeholder="Ex: 1997"
                 aria-describedby="basic-addon3 basic-addon4"
+                value={novaObra.ano}
+                onChange={handleAnoCadastro}
               />
             </div>
           </div>
@@ -363,49 +483,13 @@ function NovaObra() {
                 className="form-control"
                 aria-label="With textarea"
                 placeholder="Descrição da obra"
-              ></textarea>
+                onChange={handleDescricaoCadastro}
+              >{novaObra.descricao}</textarea>
             </div>
           </div>
 
           <div id="salvar_btn" className="mb-3 ms-auto">
-            <button className="btn">Salvar</button>
-          </div>
-        </div>
-      </div>
-
-      {/* modal da nova obra - não terminado*/}
-      <div
-        className="modal fade modal-dialog modal-dialog-centered "
-        id="exampleModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Enviar imagem
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div className="input-group mb-3">
-                  <input type="file" className="form-control" id="obra_img" />
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary">
-                Enviar imagem
-              </button>
-            </div>
+            <button className="btn" onClick={handleSalvarObra}>Salvar</button>
           </div>
         </div>
       </div>

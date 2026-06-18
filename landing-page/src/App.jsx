@@ -7,14 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 import Home from "./pages/Home/Home";
 import Obras from "./pages/Obras/Obras";
-import Login from "./pages/Login/Login";
-import Cadastro from "./pages/Cadastro/Cadastro";
-import EsqueciSenha from "./pages/EsqueciSenha/EsqueciSenha";
-import NovaObra from "./pages/NovaObra/NovaObra";
 
-// proteção de rotas
-
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 function App() {
   return (
@@ -26,15 +19,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/obras/:id" element={<Obras />} />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/completar-cadastro" element={<Cadastro />} />
-          <Route path="/esqueci-senha" element={<EsqueciSenha />} />
 
-          {/* rotas privadas - somente com o token jwt */}
-
-          <Route element={<ProtectedRoute />}>
-            <Route path="/nova-obra" element={<NovaObra />} />
-          </Route>
         </Routes>
       </BrowserRouter>
       <ToastContainer

@@ -29,7 +29,8 @@
 
 #nome_no,
 #ano_no,
-#descricao_no {
+#descricao_no,
+#img_no {
   border-radius: 30px;
   box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -43,6 +44,12 @@
 
 #descricao_no {
   height: 153px;
+}
+
+#img_no {
+  border-radius: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .titulo_item_no {
@@ -100,7 +107,8 @@
   background-color: rgb(226, 219, 219);
 }
 
-#categoria_select, #ano_select:hover {
+#categoria_select,
+#ano_select:hover {
   cursor: pointer;
 }
 

@@ -1,17 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./LinhaObra.css";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function LinhaObra({id,imagem, nome, artista, ano, categoria}) {
+function LinhaObra({
+  id,
+  nome,
+  artista,
+  ano,
+  categoria,
+  nomeArquivo,
+  arquivoBytes,
+}) {
+
+  const [imagemUrl, setImagemUrl] = useState("");
+
+  // formatar ano
 
   let anoSplit = ano.split("T");
   let data = anoSplit[0];
   let anoSolto = data.split("-");
-  let anoFinal = anoSolto[2] + "/" + anoSolto[1] + "/" + anoSolto[0] ;
+  let anoFinal = anoSolto[2] + "/" + anoSolto[1] + "/" + anoSolto[0];
+
+  // states
+
+  const [imagemUrl, setImagemUrl] = useState("");
+
+  useEffect(() => {
+    if (arquivoBytes && arquivoBytes.length > 0 && arquivoBytes[0] !== 0) {
+      const bytesBrutos = new Uint8Array(arquivoBytes);
+      const blob = new Blob([bytesBrutos], {type: "image/png"});
+    }
+  }, [arquivoBytes]);
 
   return (
     <tr>
-      <td><img id="linha_thumb" src={imagem} alt={nome} /></td>
+      <td>
+        <img id="linha_thumb" src={imagem} alt={nome} />
+      </td>
       <td id="linha_nome">{nome}</td>
       <td id="linha_artista">{artista}</td>
       <td id="linha_ano">{anoFinal}</td>

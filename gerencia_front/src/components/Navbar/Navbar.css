@@ -1,0 +1,84 @@
+* {
+  box-sizing: border-box;
+  font-family: "Inter";
+}
+
+#nav_container {
+  height: 88px;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.logo {
+  width: 80px;
+}
+
+.titulo {
+  height: 40px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 146%;
+  /* idêntico à altura da caixa ou 35px */
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.02em;
+
+  color: #000000;
+
+  /* Auto layout por dentro */
+  flex: none;
+  order: 1;
+  flex-grow: 1;
+}
+
+#btn_obras {
+  width: 80px;
+  height: 47px;
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 15px;
+}
+
+#btn_menu {
+  width: 76px;
+  height: 47px;
+  line-height: 145%;
+  /* ou 23px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #000000;
+  margin-left: 25px;
+}
+
+#logo_arte_digital {
+  width: 72px;
+  height: 56px;
+  margin: 0px 10px 0px 30px;
+}
+
+@media (max-width: 502px) {
+  .logo {
+    width: 50px;
+  }
+
+  .titulo {
+    height: 40px;
+    font-size: 20px;
+    line-height: 35px;
+  }
+
+  #logo_arte_digital {
+    width: 50px;
+    height: 38.89px;
+    margin: 0;
+  }
+}

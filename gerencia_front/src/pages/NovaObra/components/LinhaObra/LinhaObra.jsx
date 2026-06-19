@@ -12,8 +12,6 @@ function LinhaObra({
   arquivoBytes,
 }) {
 
-  const [imagemUrl, setImagemUrl] = useState("");
-
   // formatar ano
 
   let anoSplit = ano.split("T");
@@ -29,13 +27,22 @@ function LinhaObra({
     if (arquivoBytes && arquivoBytes.length > 0 && arquivoBytes[0] !== 0) {
       const bytesBrutos = new Uint8Array(arquivoBytes);
       const blob = new Blob([bytesBrutos], {type: "image/png"});
+      const urlTemp = URL.createObjectURL(blob);
+
+      setImagemUrl(urlTemp)
     }
   }, [arquivoBytes]);
 
   return (
     <tr>
       <td>
-        <img id="linha_thumb" src={imagem} alt={nome} />
+
+        {imagemUrl ? (
+          <img id="linha_thumb" src={imagemUrl} alt={nomeArquivo} />
+        ) : (
+          <span className="text-muted">Sem Foto</span>
+        )}
+
       </td>
       <td id="linha_nome">{nome}</td>
       <td id="linha_artista">{artista}</td>

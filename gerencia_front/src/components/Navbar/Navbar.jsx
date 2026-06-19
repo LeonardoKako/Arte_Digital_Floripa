@@ -25,6 +25,11 @@ function Navbar() {
                   Obras
                 </a>
               </li>
+              <li className="nav-item collapse navbar-collapse">
+                <Link id="btn_login" className=" btn btn-dark" to="/login">
+                  Login
+                </Link>
+              </li>
               <li className="nav-item">
                 <img
                   src="/img/arte_digital_logo.png"

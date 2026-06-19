@@ -1,4 +1,4 @@
-import React, { useEffect, useEffectEvent, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./NovaObra.css";
 import LinhaObra from "./components/LinhaObra/LinhaObra.jsx";
 import api from "../../services/api.js";
@@ -123,6 +123,24 @@ function NovaObra() {
   async function handleSalvarObra(e) {
     e.preventDefault();
 
+      try {
+        const response = await api.get("/auth/me");
+        setMe(response.data.usuario);
+        console.log(me.id_cadastro);
+      } catch (error) {
+        console.error("Erro detalhado me: ", error.response?.data)
+        toast.error("Erro ao buscar informaçoes do usuario logado.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+
     if (!me?.id_cadastro) {
       toast.error("Usuario logado não identificado.", {
         position: "top-center",
@@ -154,7 +172,7 @@ function NovaObra() {
         autoresIds: [1],
       };
 
-      const response = await api.post("/obras/cadastrar", payload);
+      const response = await api.post("/obras/criar", payload);
 
       toast.success("Obra cadastrada com sucesso!");
 
@@ -190,21 +208,7 @@ function NovaObra() {
 
   useEffect(() => {
     async function fetchMe() {
-      try {
-        const response = await api.get("/auth/me");
-        setMe(response.data.usuario);
-      } catch (error) {
-        toast.error("Erro ao buscar informaçoes do usuario logado.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
+
     }
   }, []);
 
@@ -226,6 +230,7 @@ function NovaObra() {
         });
 
         setObras(response.data || []);
+        console.log(response.data)
       } catch (error) {
         toast.error("Erro ao buscar obras.", {
           position: "top-center",
@@ -364,7 +369,7 @@ function NovaObra() {
                     ano={obra.data_criacao}
                     categoria={obra.categoria}
                     nomeArquivo={obra.midias3d?.[0]?.nome_arquivo}
-                    arquivoBytes={obra.midias3d?.[0]?.arquivo}
+                    arquivoBytes={obra.midias3d?.[0]?.arquivo?.data || obra.midias3d?.[0]?.arquivo}
                     key={obra.id_obra}
                   />
                 ))}
@@ -484,12 +489,15 @@ function NovaObra() {
                 aria-label="With textarea"
                 placeholder="Descrição da obra"
                 onChange={handleDescricaoCadastro}
-              >{novaObra.descricao}</textarea>
+                value={novaObra.descricao}
+              ></textarea>
             </div>
           </div>
 
           <div id="salvar_btn" className="mb-3 ms-auto">
-            <button className="btn" onClick={handleSalvarObra}>Salvar</button>
+            <button className="btn" onClick={handleSalvarObra}>
+              Salvar
+            </button>
           </div>
         </div>
       </div>

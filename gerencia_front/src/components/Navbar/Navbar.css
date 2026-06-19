@@ -47,6 +47,19 @@
   border-radius: 15px;
 }
 
+#btn_login {
+  width: 80px;
+  height: 47px;
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 15px;
+  margin-left: 10px
+}
+
 #btn_menu {
   width: 76px;
   height: 47px;

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./LinhaObra.css";
 import { Link } from "react-router-dom";
+import api from "../../../../services/api";
+import { toast } from "react-toastify";
 
 function LinhaObra({
   id,
@@ -11,7 +13,6 @@ function LinhaObra({
   nomeArquivo,
   arquivoBytes,
 }) {
-
   // formatar ano
 
   let anoSplit = ano.split("T");
@@ -23,26 +24,46 @@ function LinhaObra({
 
   const [imagemUrl, setImagemUrl] = useState("");
 
+  // handlers
+
+  async function handleDelete(e) {
+    e.preventDefault();
+    try {
+      const response = await api.delete(`/obras/deletar/${id}`);
+      window.location.reload();
+    } catch (error) {
+      toast.error("Erro ao deletar obra.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      console.error("Erro ao deletar obra:", error);
+    }
+  }
+
   useEffect(() => {
     if (arquivoBytes && arquivoBytes.length > 0 && arquivoBytes[0] !== 0) {
       const bytesBrutos = new Uint8Array(arquivoBytes);
-      const blob = new Blob([bytesBrutos], {type: "image/png"});
+      const blob = new Blob([bytesBrutos], { type: "image/png" });
       const urlTemp = URL.createObjectURL(blob);
 
-      setImagemUrl(urlTemp)
+      setImagemUrl(urlTemp);
     }
   }, [arquivoBytes]);
 
   return (
     <tr>
       <td>
-
         {imagemUrl ? (
           <img id="linha_thumb" src={imagemUrl} alt={nomeArquivo} />
         ) : (
           <span className="text-muted">Sem Foto</span>
         )}
-
       </td>
       <td id="linha_nome">{nome}</td>
       <td id="linha_artista">{artista}</td>
@@ -79,7 +100,12 @@ function LinhaObra({
               />
             </svg>
           </button>
-          <button className="btn">
+          <button
+            type="button"
+            className="btn"
+            data-bs-toggle="modal"
+            data-bs-target={`#deleteModal-${id}`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="30"
@@ -92,6 +118,50 @@ function LinhaObra({
               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
             </svg>
           </button>
+        </div>
+        {/* Delete Modal */}
+        <div
+          className="modal fade"
+          id={`deleteModal-${id}`}
+          tabIndex="-1"
+          aria-labelledby={`deleteModal-${id}`}
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id={`deleteModalLabel-${id}`}>
+                  Confirmar deletar obra
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                Deseja realmente excluir a obra: <strong>{nome}</strong>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Voltar
+                </button>
+                <button
+                  onClick={handleDelete}
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                >
+                  Sim tenho certeza
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </td>
     </tr>

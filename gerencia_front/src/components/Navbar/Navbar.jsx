@@ -21,9 +21,14 @@ function Navbar() {
           <div className="justify-content-end" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item collapse navbar-collapse">
-                <a id="btn_obras" className=" btn btn-dark" href="/obras">
+                <Link id="btn_novo_usuario" className=" btn btn-dark" to="/novo-usuario">
+                  Novo Usuario
+                </Link>
+              </li>
+              <li className="nav-item collapse navbar-collapse">
+                <Link id="btn_obras" className=" btn btn-dark" to="/obras">
                   Obras
-                </a>
+                </Link>
               </li>
               <li className="nav-item collapse navbar-collapse">
                 <Link id="btn_login" className=" btn btn-dark" to="/login">

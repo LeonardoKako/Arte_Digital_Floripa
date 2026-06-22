@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import "./EsqueciSenha.css";
-import { toast } from "react-toastify";
+import "./NovoUsuario.css";
 import api from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
-function EsqueciSenha() {
+function NovoUsuario() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
@@ -18,9 +18,9 @@ function EsqueciSenha() {
     const payload = { email: email };
 
     try {
-      const response = await api.post("/auth/recuperar-senha", payload);
+      const response = await api.post("/usuarios/cadastro", payload);
 
-      toast.success("Um email foi enviado com as instruções.", {
+      toast.success("Novo usuário cadastrado com sucesso.", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: true,
@@ -45,26 +45,27 @@ function EsqueciSenha() {
       });
     }
   }
+
   return (
     <>
       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-        <h1 id="titulo">Esqueceu a senha?</h1>
+        <h1 id="titulo">Cadastrar Usuário</h1>
         <p id="sub_titulo" className="">
-          Insira seu email e enviaremos um link para redefinir sua senha
+          Insira seu email e enviaremos um link para completar seu cadastro.
         </p>
         <form onSubmit={handleEnviar}>
           <div className="mb-3">
             <input
-              onChange={handleEmail}
-              value={email}
               type="email"
               className="form-control"
               id="email_es"
               placeholder="Email"
+              value={email}
+              onChange={handleEmail}
             />
           </div>
           <button id="enviar_btn" type="submit" className="btn">
-            Enviar link de recuperação
+            Cadastrar Email
           </button>
         </form>
       </div>
@@ -72,4 +73,4 @@ function EsqueciSenha() {
   );
 }
 
-export default EsqueciSenha;
+export default NovoUsuario;

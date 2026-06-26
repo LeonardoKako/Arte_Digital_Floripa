@@ -67,10 +67,24 @@ async function criarObra(dados) {
             erro.statusCode = 400;
             throw erro;
         }
-        const autoresExistentes = await prisma.autor.findMany({
+        let autoresExistentes = await prisma.autor.findMany({
             where: { id_autor: { in: dados.autoresIds.map(id => parseInt(id)) } }
         });
-        if (autoresExistentes.length !== dados.autoresIds.length) {
+        if (autoresExistentes.length === 0) {
+            let autorPadrao = await prisma.autor.findFirst({
+                where: { nome_publico: "Franklin Cascaes" }
+            });
+            if (!autorPadrao) {
+                autorPadrao = await prisma.autor.create({
+                    data: {
+                        nome_publico: "Franklin Cascaes",
+                        nacionalidade: "Brasileira"
+                    }
+                });
+            }
+            autoresExistentes = [autorPadrao];
+            dados.autoresIds = [autorPadrao.id_autor];
+        } else if (autoresExistentes.length !== dados.autoresIds.length) {
             const erro = new Error('Um ou mais autores informados não existem.');
             erro.statusCode = 404;
             throw erro;
@@ -85,13 +99,14 @@ async function criarObra(dados) {
             throw erro;
         }
         const usuariosExistentes = await prisma.usuario.findMany({
-            where: { id_usuario: { in: dados.usuariosIds.map(id => parseInt(id)) } }
+            where: { id_cadastro: { in: dados.usuariosIds.map(id => parseInt(id)) } }
         });
         if (usuariosExistentes.length !== dados.usuariosIds.length) {
             const erro = new Error('Um ou mais usuários informados não existem.');
             erro.statusCode = 404;
             throw erro;
         }
+        dados.usuariosIds = usuariosExistentes.map(u => u.id_usuario);
     }
 
     if (dados.midias3d && dados.midias3d.length) {
@@ -170,10 +185,24 @@ async function atualizarObra(id, dados) {
             erro.statusCode = 400;
             throw erro;
         }
-        const autoresExistentes = await prisma.autor.findMany({
+        let autoresExistentes = await prisma.autor.findMany({
             where: { id_autor: { in: dados.autoresIds.map(id => parseInt(id)) } }
         });
-        if (autoresExistentes.length !== dados.autoresIds.length) {
+        if (autoresExistentes.length === 0) {
+            let autorPadrao = await prisma.autor.findFirst({
+                where: { nome_publico: "Franklin Cascaes" }
+            });
+            if (!autorPadrao) {
+                autorPadrao = await prisma.autor.create({
+                    data: {
+                        nome_publico: "Franklin Cascaes",
+                        nacionalidade: "Brasileira"
+                    }
+                });
+            }
+            autoresExistentes = [autorPadrao];
+            dados.autoresIds = [autorPadrao.id_autor];
+        } else if (autoresExistentes.length !== dados.autoresIds.length) {
             const erro = new Error('Um ou mais autores informados não existem.');
             erro.statusCode = 404;
             throw erro;
@@ -188,13 +217,14 @@ async function atualizarObra(id, dados) {
             throw erro;
         }
         const usuariosExistentes = await prisma.usuario.findMany({
-            where: { id_usuario: { in: dados.usuariosIds.map(id => parseInt(id)) } }
+            where: { id_cadastro: { in: dados.usuariosIds.map(id => parseInt(id)) } }
         });
         if (usuariosExistentes.length !== dados.usuariosIds.length) {
             const erro = new Error('Um ou mais usuários informados não existem.');
             erro.statusCode = 404;
             throw erro;
         }
+        dados.usuariosIds = usuariosExistentes.map(u => u.id_usuario);
     }
 
     if (dados.midias3d && dados.midias3d.length) {

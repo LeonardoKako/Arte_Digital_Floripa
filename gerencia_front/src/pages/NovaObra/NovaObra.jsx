@@ -118,31 +118,27 @@ function NovaObra() {
     }
   }
 
+  // resgatar dados do usuario logado ao montar o componente
+  useEffect(() => {
+    async function fetchMe() {
+      try {
+        const response = await api.get("/auth/me");
+        setMe(response.data.usuario);
+      } catch (error) {
+        console.error("Erro ao carregar usuário logado:", error);
+        toast.error("Erro ao buscar informações do usuário logado. Por favor, faça login novamente.");
+      }
+    }
+    fetchMe();
+  }, []);
+
   // handler de salvar uma obra
 
   async function handleSalvarObra(e) {
     e.preventDefault();
 
-      try {
-        const response = await api.get("/auth/me");
-        setMe(response.data.usuario);
-        console.log(me.id_cadastro);
-      } catch (error) {
-        console.error("Erro detalhado me: ", error.response?.data)
-        toast.error("Erro ao buscar informaçoes do usuario logado.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-
     if (!me?.id_cadastro) {
-      toast.error("Usuario logado não identificado.", {
+      toast.error("Usuário logado não identificado. Por favor, faça login novamente.", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: true,

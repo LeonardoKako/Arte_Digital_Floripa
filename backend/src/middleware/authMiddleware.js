@@ -1,0 +1,44 @@
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import usuarioService from "../modules/usuario/usuarioService.js";
+
+export const authMiddleware = async (req, res, next) => {
+    const { authorization } = req.headers;
+
+    // Erro 401 não autorizado
+    if(!authorization) return next(new Error("Não autorizado!"));
+
+    // É usado o padrão do Bearer token
+    // Bearer token sempre retorna: "Bearer + token"
+    // Função split separa a palavra bearer do token em um array quando tem um espaço em branco
+    // Bearer fica na posição 0 e o token na 1
+    // Pega a posição 1 para ter o token
+    const token = authorization.split(' ')[1];
+
+    if(!token) return next(new Error("Não autorizado!"));
+
+    try {
+        const { id_cadastro } = jwt.verify(token, process.env.JWT_PASSWORD);
+
+        const usuarioLogado = await usuarioService.listarUsuarioPorId(id_cadastro);
+
+        req.usuario = usuarioLogado;
+
+        // está tudo certo, pode executar próxima função
+        next();
+    } catch(error) {
+        if(error.message === "Usuário não encontrado") {
+            return next(new Error("Não autorizado!"));
+        }
+        return next(error);
+    }   
+}
+
+// export const autorizar = (...tiposPermitidos) => {
+//     return (req, res, next) => {
+//         if(!tiposPermitidos.includes(req.usuario.tipo_usuario)) {
+//             return res.status(403).json({ mensagem: "Não autorizado!"});
+//         }
+//         next();
+//     }
+// }

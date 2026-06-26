@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cadastro {
+  id_cadastro   Int       @id @default(autoincrement())
+  tipo_usuario  String?    @db.VarChar(50)
+  nome          String?    @db.VarChar(100)
+  email         String    @unique @db.VarChar(150)
+  senha         String?    @db.VarChar(255)
+  data_cadastro DateTime? @default(now()) @db.Timestamp(6)
+  token_temporario  String?   @db.VarChar(255)
+  token_expiracao   DateTime? @db.Timestamp(6)
+  usuario usuario?
+}
+
+model usuario {
+  id_usuario   Int    @id @default(autoincrement())
+  tipo_usuario String? @db.VarChar(50)
+
+  id_cadastro Int @unique
+
+  cadastro cadastro @relation(fields: [id_cadastro], references: [id_cadastro], onDelete: Cascade)
+
+  usuario_acervo usuario_acervo[]
+}
+
+model autor {
+  id_autor        Int       @id @default(autoincrement())
+  nome_publico    String    @db.VarChar(150)
+  nacionalidade   String?   @db.VarChar(100)
+  data_nascimento DateTime? @db.Date
+
+  autor_acervo autor_acervo[]
+}
+
+model acervo {
+  id_obra      Int       @id @default(autoincrement())
+  titulo       String    @db.VarChar(200)
+  data_criacao DateTime? @db.Date
+  descricao    String?
+  categoria    String?   @db.VarChar(100)
+
+  midia3d       midia3d[]
+  usuario_acervo usuario_acervo[]
+  autor_acervo   autor_acervo[]
+
+  @@map("acervo")
+}
+
+model midia3d {
+  id_midia3d   Int       @id @default(autoincrement())
+  nome_arquivo String    @db.VarChar(255)
+  arquivo      Bytes
+  data_upload  DateTime? @default(now()) @db.Timestamp(6)
+
+  id_obra Int
+
+  acervo acervo @relation(fields: [id_obra], references: [id_obra], onDelete: Cascade)
+}
+
+model usuario_acervo {
+  id_usuario Int
+  id_obra    Int
+
+  usuario usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  acervo  acervo  @relation(fields: [id_obra], references: [id_obra], onDelete: Cascade)
+
+  @@id([id_usuario, id_obra])
+}
+
+model autor_acervo {
+  id_autor Int
+  id_obra  Int
+
+  autor  autor  @relation(fields: [id_autor], references: [id_autor], onDelete: Cascade)
+  acervo acervo @relation(fields: [id_obra], references: [id_obra], onDelete: Cascade)
+
+  @@id([id_autor, id_obra])
+}
